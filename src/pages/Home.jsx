@@ -14,7 +14,7 @@ const Home = () => {
       <div className="bg-orange-500 text-white py-20 text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-5xl font-bold mb-4 flex items-center justify-center">
-            <FiMenu className="mr-2" /> Welcome to FoodHub
+             Welcome to FoodHub
           </h1>
           <p className="text-xl mb-6">
             Delicious meals delivered to your door. Order now and savor the taste!

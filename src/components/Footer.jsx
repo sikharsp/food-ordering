@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FiHome, FiMenu, FiPhone, FiMail, FiFacebook, FiTwitter, FiInstagram } from 'react-icons/fi';
+import { FiHome, FiMenu, FiPhone,FiSettings,FiUser,FiUserPlus,FiMapPin, FiMail, FiFacebook, FiTwitter, FiInstagram } from 'react-icons/fi';
 
 const Footer = () => {
   return (
@@ -20,7 +20,7 @@ const Footer = () => {
             </li>
             <li>
               <Link to="/services" className="hover:text-orange-300 flex items-center">
-                <FiMenu className="mr-2" /> Services
+              <FiSettings className="mr-2" /> Services
               </Link>
             </li>
             <li>
@@ -30,12 +30,12 @@ const Footer = () => {
             </li>
             <li>
               <Link to="/login" className="hover:text-orange-300 flex items-center">
-                <FiPhone className="mr-2" /> Login
+                <FiUser className="mr-1" /> Login
               </Link>
             </li>
             <li>
               <Link to="/register" className="hover:text-orange-300 flex items-center">
-                <FiPhone className="mr-2" /> Register
+                <FiUserPlus className="mr-2" /> Register
               </Link>
             </li>
           </ul>
@@ -45,12 +45,26 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
           <p className="flex items-center text-gray-300 mb-2">
-            <FiPhone className="mr-2" /> +977-9867391430
+          <FiPhone className="mr-2" />
+          <a href="tel:+9779867391430" className="hover:text-orange-500">
+           +977-9867391430</a>
           </p>
+          
+
           <p className="flex items-center text-gray-300 mb-2">
-            <FiMail className="mr-2" /> support@foodhub.com
-          </p>
-          <p className="text-gray-300">Kathmandu, Nepal</p>
+           <FiMail className="mr-2" />
+            <a href="mailto:support@foodhub.com" className="hover:text-orange-500">
+              support@foodhub.com</a>
+            </p>
+
+          <p className="flex items-center text-gray-300">
+    <FiMapPin className="mr-2" /> 
+    <a href="https://www.google.com/maps/place/Kathmandu,+Nepal" target="_blank" rel="noopener noreferrer"
+      className="hover:text-orange-500">
+      Kathmandu, Nepal
+    </a>
+  </p>
+
         </div>
 
         {/* Social Media */}
