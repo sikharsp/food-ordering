@@ -53,8 +53,8 @@ const Footer = () => {
 
           <p className="flex items-center text-gray-300 mb-2">
            <FiMail className="mr-2" />
-            <a href="mailto:support@foodhub.com" className="hover:text-orange-500">
-              support@foodhub.com</a>
+            <a href="mailto:psikhar74@gmail.com" className="hover:text-orange-500">
+              psikhar74@gmail.com</a>
             </p>
 
           <p className="flex items-center text-gray-300">
