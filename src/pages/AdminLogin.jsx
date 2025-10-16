@@ -3,7 +3,7 @@ import { FiMail, FiLock } from 'react-icons/fi';
 import * as Yup from 'yup';
 import axios from 'axios';
 
-// Validation schema with Yup
+// Validation  Yup
 const AdminLoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
   password: Yup.string()
@@ -74,17 +74,13 @@ const AdminLogin = () => {
             </label>
             <div className="mt-1 relative">
               <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                id="email"
-                name="email"
-                type="email"
+              <input id="email" name="email" type="email"
                 value={formData.email}
                 onChange={handleChange}
                 className={`block w-full pl-10 pr-3 py-2 border ${
                   errors.email ? 'border-red-500' : 'border-gray-300'
                 } rounded-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
-                placeholder="admin@example.com"
-              />
+                placeholder="admin@example.com"/>
             </div>
             {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
           </div>
@@ -104,27 +100,22 @@ const AdminLogin = () => {
                 className={`block w-full pl-10 pr-3 py-2 border ${
                   errors.password ? 'border-red-500' : 'border-gray-300'
                 } rounded-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
-                placeholder="********"
-              />
+                placeholder="********" />
             </div>
             {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
           </div>
 
           <div>
-            <button
-              type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-            >
-              Login
-            </button>
+            <button type="submit"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" >
+              Login </button>
           </div>
           {loginError && <p className="mt-2 text-sm text-red-500 text-center">{loginError}</p>}
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">
           Back to{' '}
           <a href="/" className="text-orange-500 hover:text-orange-600 font-medium">
-            Home
-          </a>
+            Home </a>
         </p>
       </div>
     </div>

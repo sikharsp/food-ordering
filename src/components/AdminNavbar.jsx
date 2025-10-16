@@ -17,21 +17,16 @@ const AdminNavbar = () => {
   return (
     <nav className="bg-gray-900 text-white fixed w-full top-0 z-20 shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
-        {/* Logo / Home */}
         <Link to="/admin-dashboard" className="text-lg font-bold hover:text-orange-300 flex items-center">
           <FiHome className="mr-2" /> Admin
         </Link>
-
-        {/* Desktop Links */}
+          {/* desktop */}
         <div className="hidden md:flex space-x-6 items-center">
           <Link to="/admin-dashboard/menu" className="flex items-center hover:text-orange-300">
             <FiMenu className="mr-2" /> Menu
           </Link>
           <Link to="/admin-dashboard/orders" className="flex items-center hover:text-orange-300">
             <FiShoppingCart className="mr-2" /> Orders
-          </Link>
-          <Link to="/admin-dashboard/users" className="flex items-center hover:text-orange-300">
-            <FiUsers className="mr-2" /> Users
           </Link>
           <Link to="/admin-dashboard/reports" className="flex items-center hover:text-orange-300">
             <FiBarChart2 className="mr-2" /> Reports
@@ -43,15 +38,13 @@ const AdminNavbar = () => {
             <FiLogOut className="mr-2" /> Logout
           </button>
         </div>
-
-        {/* Mobile Menu Button */}
+        {/* Mobile button*/}
         <div className="md:hidden flex items-center">
           <button onClick={toggleMenu} className="focus:outline-none">
             {isOpen ? <FiX size={24} /> : <FiMenuIcon size={24} />}
           </button>
         </div>
       </div>
-
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-gray-800">
@@ -69,13 +62,7 @@ const AdminNavbar = () => {
           >
             <FiShoppingCart className="mr-2" /> Orders
           </Link>
-          <Link
-            to="/admin-dashboard/users"
-            onClick={toggleMenu}
-            className="block px-4 py-2 hover:bg-gray-700 flex items-center"
-          >
-            <FiUsers className="mr-2" /> Users
-          </Link>
+          
           <Link
             to="/admin-dashboard/reports"
             onClick={toggleMenu}

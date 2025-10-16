@@ -1,29 +1,24 @@
 import { useState } from 'react';
-import { FiMail, FiLock } from 'react-icons/fi';
+import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import * as Yup from 'yup';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
-// Validation schema with Yup
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
-  password: Yup.string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      'Password must contain at least one uppercase, one lowercase, one number, and one special character'
-    ),
+  password: Yup.string().required('Password is required'),
 });
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
+  const [loginError, setLoginError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -31,15 +26,36 @@ const Login = () => {
     try {
       await LoginSchema.validate(formData, { abortEarly: false });
       setErrors({});
-      // Placeholder for backend API call
-      console.log('Form submitted:', formData);
-      alert('Login successful! (Placeholder - backend not connected)');
+      setLoginError('');
+      setLoading(true);
+
+      const response = await axios.post('http://localhost/api/login.php', formData);
+
+    if (response.data.success) {
+  const pref = response.data.preference || 'both';
+  localStorage.setItem('token', response.data.token);
+  localStorage.setItem('preference', pref.toLowerCase());
+  localStorage.setItem('user', JSON.stringify(response.data.user));
+  localStorage.setItem('user_id', response.data.user.id);
+ navigate('/dashboard/menu');
+}
+
+ else {
+        setLoginError(response.data.message || 'Invalid credentials');
+      }
     } catch (err) {
-      const validationErrors = {};
-      err.inner.forEach((error) => {
-        validationErrors[error.path] = error.message;
-      });
-      setErrors(validationErrors);
+      if (err instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        err.inner.forEach((error) => {
+          validationErrors[error.path] = error.message;
+        });
+        setErrors(validationErrors);
+      } else {
+        setLoginError('An error occurred. Please try again.');
+        console.error('Error:', err);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,11 +66,10 @@ const Login = () => {
           <FiLock className="mr-2" /> Login
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
+
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
             <div className="mt-1 relative">
               <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
@@ -66,49 +81,52 @@ const Login = () => {
                 className={`block w-full pl-10 pr-3 py-2 border ${
                   errors.email ? 'border-red-500' : 'border-gray-300'
                 } rounded-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
-                placeholder="you@example.com"
-              />
+                placeholder="you@example.com" />
             </div>
             {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
           </div>
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
             <div className="mt-1 relative">
               <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-3 py-2 border ${
+                className={`block w-full pl-10 pr-10 py-2 border ${
                   errors.password ? 'border-red-500' : 'border-gray-300'
                 } rounded-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
-                placeholder="********"
-              />
+                placeholder="********" />
+              <span onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer" >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </span>
             </div>
             {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
           </div>
 
-          {/* Submit Button */}
           <div>
             <button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-            >
-              Login
+              disabled={loading}
+              className={`w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md font-medium ${
+                loading ? 'cursor-not-allowed bg-gray-400' : ''
+              }`} >
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </div>
         </form>
+        {loginError && <p className="mt-2 text-sm text-red-500 text-center">{loginError}</p>}
+
         <p className="mt-4 text-center text-sm text-gray-600">
           Don't have an account?{' '}
-          <a href="/register" className="text-orange-500 hover:text-orange-600 font-medium">
+          <Link to="/register" className="text-orange-500 hover:text-orange-600 font-medium">
             Register
-          </a>
+          </Link>
         </p>
       </div>
     </div>

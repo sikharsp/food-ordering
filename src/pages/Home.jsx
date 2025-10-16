@@ -19,12 +19,9 @@ const Home = () => {
           <p className="text-xl mb-6">
             Delicious meals delivered to your door. Order now and savor the taste!
           </p>
-          <Link
-            to="/menu"
-            className="bg-white text-orange-500 hover:bg-gray-100 py-3 px-6 rounded-md font-medium"
-          >
-            Order Now
-          </Link>
+          <Link to="/menu"
+            className="bg-white text-orange-500 hover:bg-gray-100 py-3 px-6 rounded-md font-medium">
+            Order Now </Link>
         </div>
       </div>
 
@@ -38,8 +35,7 @@ const Home = () => {
               <Link
                 key={index}
                 to={item.title.toLowerCase() === 'home' ? '/' : `/${item.title.toLowerCase()}`}
-                className="bg-white p-6 rounded-lg shadow-lg text-center hover:bg-gray-50 transition duration-300"
-              >
+                className="bg-white p-6 rounded-lg shadow-lg text-center hover:bg-gray-50 transition duration-300" >
                 <Icon className="text-4xl text-orange-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900">{item.title}</h3>
                 <p className="text-gray-600 mt-2">{item.description}</p>

@@ -52,9 +52,7 @@ const Contact = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Name
-                </label>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name </label>
                 <input
                   id="name"
                   name="name"
@@ -64,14 +62,11 @@ const Contact = () => {
                   className={`mt-1 block w-full border ${
                     errors.name ? 'border-red-500' : 'border-gray-300'
                   } rounded-md py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
-                  placeholder="Your Name"
-                />
+                  placeholder="Your Name" />
                 {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700"> Email </label>
                 <input
                   id="email"
                   name="email"
@@ -81,8 +76,7 @@ const Contact = () => {
                   className={`mt-1 block w-full border ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   } rounded-md py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
-                  placeholder="you@example.com"
-                />
+                  placeholder="you@example.com" />
                 {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
               </div>
               <div>
@@ -98,15 +92,12 @@ const Contact = () => {
                     errors.message ? 'border-red-500' : 'border-gray-300'
                   } rounded-md py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm`}
                   placeholder="Your message"
-                  rows="4"
-                />
+                  rows="4" />
                 {errors.message && <p className="mt-1 text-sm text-red-500">{errors.message}</p>}
               </div>
               <div>
-                <button
-                  type="submit"
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-                >
+                <button type="submit"
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" >
                   Send Message
                 </button>
               </div>

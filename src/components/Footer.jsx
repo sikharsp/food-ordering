@@ -40,8 +40,6 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-
-        {/* Contact Info */}
         <div>
           <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
           <p className="flex items-center text-gray-300 mb-2">
@@ -49,25 +47,19 @@ const Footer = () => {
           <a href="tel:+9779867391430" className="hover:text-orange-500">
            +977-9867391430</a>
           </p>
-          
-
           <p className="flex items-center text-gray-300 mb-2">
            <FiMail className="mr-2" />
             <a href="mailto:psikhar74@gmail.com" className="hover:text-orange-500">
               psikhar74@gmail.com</a>
             </p>
-
           <p className="flex items-center text-gray-300">
     <FiMapPin className="mr-2" /> 
     <a href="https://www.google.com/maps/place/Kathmandu,+Nepal" target="_blank" rel="noopener noreferrer"
       className="hover:text-orange-500">
       Kathmandu, Nepal
     </a>
-  </p>
-
+          </p>
         </div>
-
-        {/* Social Media */}
         <div>
           <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
           <div className="flex space-x-4">

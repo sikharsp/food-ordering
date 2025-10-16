@@ -106,8 +106,6 @@ const MenuAdmin = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
   <h1 className="text-3xl font-bold mb-1 text-gray-800">Manage Menu</h1>
-
-      {/* Add/Edit Form */}
       <div className="bg-white rounded-lg shadow-lg p-6 mb-8 max-w-xl mx-auto">
         <h2 className="text-xl font-semibold mb-4 text-gray-700">
           {isEditing ? "Edit Menu Item" : "Add New Menu Item"}
@@ -120,8 +118,7 @@ const MenuAdmin = () => {
             value={formData.name}
             onChange={handleChange}
             className="border rounded-md p-3 w-full focus:ring-2 focus:ring-blue-400 outline-none"
-            required
-          />
+            required />
           <textarea
             name="description"
             placeholder="Description"
@@ -129,8 +126,7 @@ const MenuAdmin = () => {
             onChange={handleChange}
             className="border rounded-md p-3 w-full focus:ring-2 focus:ring-blue-400 outline-none"
             rows={3}
-            required
-          ></textarea>
+            required ></textarea>
           <input
             type="number"
             name="price"
@@ -138,41 +134,30 @@ const MenuAdmin = () => {
             value={formData.price}
             onChange={handleChange}
             className="border rounded-md p-3 w-full focus:ring-2 focus:ring-blue-400 outline-none"
-            required
-          />
-          <select
-            name="preference"
-            value={formData.preference}
-            onChange={handleChange}
-            className="border rounded-md p-3 w-full focus:ring-2 focus:ring-blue-400 outline-none"
-          >
-            <option value="veg">Veg</option>
-            <option value="nonveg">Non-Veg</option>
-            <option value="both">Both</option>
-          </select>
+            required />
+          <select name="preference" value={formData.preference} onChange={handleChange} className="border rounded-md p-3 w-full focus:ring-2 focus:ring-blue-400 outline-none">
+  <option value="veg">Veg</option>
+  <option value="nonveg">Non-Veg</option>
+    </select>
+
      <div className="w-40 h-40 border-2 border-dashed border-gray-400 rounded-md flex items-center justify-center cursor-pointer hover:border-gray-600 relative">
     <input
       type="file"
       name="image"
       onChange={handleChange}
-      className="absolute w-full h-full opacity-0 cursor-pointer"
-    />
+      className="absolute w-full h-full opacity-0 cursor-pointer" />
     {!preview && <span className="text-gray-500 text-center">Click to upload</span>}
     {preview && (
       <img
         src={preview}
         alt="Preview"
-        className="h-full w-full object-cover rounded-md"
-      />
+        className="h-full w-full object-cover rounded-md" />
     )}
   </div>
 
-          <button
-            type="submit"
-            className={`w-full py-3 rounded-md text-white font-semibold transition ${
+          <button type="submit" className={`w-full py-3 rounded-md text-white font-semibold transition ${
               isEditing ? "bg-yellow-500 hover:bg-yellow-600" : "bg-blue-500 hover:bg-blue-600"
-            }`}
-          >
+            }`} >
             {isEditing ? "Update Menu" : "Add Menu"}
           </button>
         </form>
@@ -202,8 +187,7 @@ const MenuAdmin = () => {
               menus.map((menu, index) => (
                 <tr
                   key={menu.id}
-                  className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
-                >
+                  className={index % 2 === 0 ? "bg-gray-50" : "bg-white"} >
                   <td className="py-2 px-4">{menu.id}</td>
                   <td className="py-2 px-4">{menu.name}</td>
                   <td className="py-2 px-4">Rs {menu.price}</td>
@@ -220,14 +204,12 @@ const MenuAdmin = () => {
                   <td className="py-2 px-4 space-x-2">
                     <button
                       onClick={() => handleEdit(menu)}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md"
-                    >
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md" >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(menu.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
-                    >
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md" >
                       Delete
                     </button>
                   </td>
