@@ -31,6 +31,9 @@ const AdminNavbar = () => {
           <Link to="/admin-dashboard/reports" className="flex items-center hover:text-orange-300">
             <FiBarChart2 className="mr-2" /> Reports
           </Link>
+          <Link to="/admin-dashboard/message" className="flex items-center hover:text-orange-300">
+            <FiBarChart2 className="mr-2" /> Message
+          </Link>
           <button
             onClick={handleLogout}
             className="flex items-center bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded-md"
@@ -69,6 +72,13 @@ const AdminNavbar = () => {
             className="block px-4 py-2 hover:bg-gray-700 flex items-center"
           >
             <FiBarChart2 className="mr-2" /> Reports
+          </Link>
+          <Link
+            to="/admin-dashboard/message"
+            onClick={toggleMenu}
+            className="block px-4 py-2 hover:bg-gray-700 flex items-center"
+          >
+            <FiBarChart2 className="mr-2" /> Message
           </Link>
           <button
             onClick={handleLogout}

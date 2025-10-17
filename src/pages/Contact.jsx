@@ -18,20 +18,35 @@ const Contact = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await ContactSchema.validate(formData, { abortEarly: false });
-      setErrors({});
-      console.log('Form submitted:', formData);
-      alert('Message sent! (Placeholder - backend not connected)');
-    } catch (err) {
-      const validationErrors = {};
-      err.inner.forEach((error) => {
-        validationErrors[error.path] = error.message;
-      });
-      setErrors(validationErrors);
+  e.preventDefault();
+  try {
+    await ContactSchema.validate(formData, { abortEarly: false });
+    setErrors({});
+
+    // Send to backend
+    const res = await fetch("http://localhost/api/contact/send_message.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      alert(result.message);
+      setFormData({ name: "", email: "", message: "" });
+    } else {
+      alert(result.message);
     }
-  };
+  } catch (err) {
+    const validationErrors = {};
+    err.inner.forEach((error) => {
+      validationErrors[error.path] = error.message;
+    });
+    setErrors(validationErrors);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">

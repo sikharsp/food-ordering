@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useOutletContext, useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost/api/orders/orders.php";
+const API_BASE = "http://localhost/api/orders";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
+  const { setCart } = useOutletContext();
+  const navigate = useNavigate();
 
-  const user_id = localStorage.getItem("user_id"); // assume stored on login
+  const user_id = localStorage.getItem("user_id");
 
-  // Fetch orders function
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`${API_URL}?user_id=${user_id}`);
+      const res = await axios.get(`${API_BASE}/orders.php?user_id=${user_id}`);
       setOrders(res.data);
     } catch (err) {
       console.error("Error fetching orders:", err);
@@ -27,6 +29,31 @@ const OrderHistory = () => {
     const interval = setInterval(fetchOrders, 5000);
     return () => clearInterval(interval);
   }, [user_id]);
+
+  const handleReorder = async (orderId) => {
+    try {
+      const res = await axios.get(`${API_BASE}/get_order_items.php?order_id=${orderId}`);
+
+      if (res.data.success && Array.isArray(res.data.items)) {
+        // Convert to cart format
+        const reorderedItems = res.data.items.map((item) => ({
+          id: item.menu_item_id,
+          name: item.name,
+          price: parseFloat(item.price),
+          quantity: parseInt(item.quantity),
+          image: item.image,
+        }));
+
+        setCart(reorderedItems);
+        navigate("/dashboard/cart"); // go to cart page
+      } else {
+        alert("No items found for reorder.");
+      }
+    } catch (error) {
+      console.error("Reorder error:", error);
+      alert("Error reordering items.");
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -93,6 +120,14 @@ const OrderHistory = () => {
               >
                 {order.status}
               </p>
+
+              {/* Reorder Button */}
+              <button
+                onClick={() => handleReorder(order.id)}
+                className="mt-4 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl font-semibold transition w-full"
+              >
+                Reorder
+              </button>
             </div>
           </div>
         ))}
@@ -105,7 +140,8 @@ const OrderHistory = () => {
               onClick={() => setSelectedImage(null)}
               className="absolute top-3 right-3 text-gray-600 hover:text-red-600 text-2xl font-bold"
             >
-              ✕ </button>
+              ✕
+            </button>
             <img
               src={selectedImage}
               alt="Full Receipt"

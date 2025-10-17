@@ -18,6 +18,7 @@ const UserMenu = () => {
         const res = await axios.get(API_URL);
         let menuItems = Array.isArray(res.data) ? res.data : [];
 
+        // Filter by preference if selected
         const preference =
           localStorage.getItem("preference")?.toLowerCase() || "both";
         if (preference !== "both") {
@@ -25,6 +26,10 @@ const UserMenu = () => {
             (item) => item.preference.toLowerCase() === preference
           );
         }
+
+        // Sort popular items first
+        menuItems.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0));
+
         setMenus(menuItems);
       } catch (err) {
         console.error("Error fetching menu:", err);
@@ -120,13 +125,11 @@ const UserMenu = () => {
                     {item.name}
                   </h2>
                   <p className="text-gray-500 text-sm mt-1 line-clamp-2">
-                    {" "}
-                    {item.description}{" "}
+                    {item.description}
                   </p>
                 </div>
                 <p className="font-semibold text-orange-600 text-base mt-2">
-                  {" "}
-                  Rs {item.price}{" "}
+                  Rs {item.price}
                 </p>
                 {!cartItem ? (
                   <button
@@ -134,14 +137,16 @@ const UserMenu = () => {
                     className="mt-3 w-full bg-orange-500 hover:bg-orange-600 
                     text-white py-2 rounded-xl font-medium transition"
                   >
-                    Add to Cart{" "}
+                    Add to Cart
                   </button>
                 ) : (
                   <div className="mt-3 flex items-center justify-center space-x-3">
                     <button
                       onClick={() => handleDecreaseQuantity(item.id)}
                       className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-lg font-semibold"
-                    ></button>
+                    >
+                      −
+                    </button>
                     <span className="text-gray-800 font-semibold">
                       {cartItem.quantity}
                     </span>
@@ -149,7 +154,7 @@ const UserMenu = () => {
                       onClick={() => handleAddToCart(item)}
                       className="bg-orange-500 hover:bg-orange-600 text-white py-1 px-3 rounded-lg font-semibold"
                     >
-                      +{" "}
+                      +
                     </button>
                   </div>
                 )}
