@@ -59,7 +59,8 @@ const AdminOrders = () => {
             id="statusFilter"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="border rounded px-2 py-1">
+            className="border rounded px-2 py-1"
+          >
             <option value="All">All</option>
             <option value="Pending">Pending</option>
             <option value="Approved">Approved</option>
@@ -68,88 +69,105 @@ const AdminOrders = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white rounded-xl shadow-md">
-          <thead>
-  <tr className="bg-blue-600 text-white text-left">
-    <th className="py-3 px-4">#</th>
-    <th className="py-3 px-4">User</th>
-    <th className="py-3 px-4">Location</th>
-    <th className="py-3 px-4">Address</th>
-    <th className="py-3 px-4">Transaction Code</th>
-    <th className="py-3 px-4">Receipt</th>
-    <th className="py-3 px-4">Items</th>
-    <th className="py-3 px-4">Total</th>
-    <th className="py-3 px-4">Status</th>
-    <th className="py-3 px-4">Actions</th>
-  </tr>
-</thead>
-
-
-         <tbody>
-  {filteredOrders.length > 0 ? (
-    filteredOrders.map((order, index) => (
-      <tr key={order.id} className="border-b hover:bg-gray-50">
-        <td className="py-3 px-4">{index + 1}</td>
-        <td className="py-3 px-4">{order.user_name}</td>
-        <td className="py-3 px-4">{order.location || "—"}</td>
-        <td className="py-3 px-4">{order.address || "—"}</td>
-        <td className="py-3 px-4">{order.transaction_code || "—"}</td>
-        <td className="py-3 px-4">
-          {order.receipt_url ? (
-            <a href={order.receipt_url} target="_blank" rel="noopener noreferrer">
-              <img
-                src={order.receipt_url}
-                alt="Receipt"
-                className="w-16 h-16 object-cover rounded-md border" />
-            </a>
-          ) : (
-            "No Receipt"
-          )}
-        </td>
-        <td className="py-3 px-4">
-          {order.items?.map((item, i) => (
-            <div key={i}>
-              {item.name} × {item.quantity}
-            </div>
-          ))}
-        </td>
-        <td className="py-3 px-4 font-semibold">₹{order.total.toFixed(2)}</td>
-        <td className="py-3 px-4">
-          <span
-            className={`px-3 py-1 rounded-full text-sm ${
-              order.status === "Approved"
-                ? "bg-green-100 text-green-700"
-                : order.status === "Rejected"
-                ? "bg-red-100 text-red-700"
-                : "bg-yellow-100 text-yellow-700"
-            }`} >
-            {order.status}
-          </span>
-        </td>
-        <td className="py-3 px-4 flex gap-2">
-          <button onClick={() => updateOrderStatus(order.id, "Approved")}
-            className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700" >
-            Approve </button>
-          <button onClick={() => updateOrderStatus(order.id, "Rejected")}
-            className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700" >
-            Reject </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="10" className="text-center py-4 text-gray-500">
-        No orders found
-      </td>
-    </tr>
-  )}
-</tbody>
-
+      {/* Scrollable Table */}
+      <div className="overflow-x-auto overflow-y-auto max-h-[70vh] bg-white rounded-xl shadow-md">
+        <table className="min-w-full border-collapse">
+          <thead className="sticky top-0 bg-blue-600 text-white z-10">
+            <tr>
+              <th className="py-3 px-4">#</th>
+              <th className="py-3 px-4">User</th>
+              <th className="py-3 px-4">Location</th>
+              <th className="py-3 px-4">Address</th>
+              <th className="py-3 px-4">Transaction Code</th>
+              <th className="py-3 px-4">Receipt</th>
+              <th className="py-3 px-4">Items</th>
+              <th className="py-3 px-4">Total</th>
+              <th className="py-3 px-4">Status</th>
+              <th className="py-3 px-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredOrders.length > 0 ? (
+              filteredOrders.map((order, index) => (
+                <tr key={order.id} className="border-b hover:bg-gray-50">
+                  <td className="py-3 px-4">{index + 1}</td>
+                  <td className="py-3 px-4">{order.user_name}</td>
+                  <td className="py-3 px-4">{order.location || "—"}</td>
+                  <td className="py-3 px-4">{order.address || "—"}</td>
+                  <td className="py-3 px-4">{order.transaction_code || "—"}</td>
+                  <td className="py-3 px-4">
+                    {order.receipt_url ? (
+                      <a
+                        href={order.receipt_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={order.receipt_url}
+                          alt="Receipt"
+                          className="w-16 h-16 object-cover rounded-md border"
+                        />
+                      </a>
+                    ) : (
+                      "No Receipt"
+                    )}
+                  </td>
+                  <td className="py-3 px-4">
+                    {Array.isArray(order.items)
+                      ? order.items.map((item, i) => (
+                          <div key={i}>
+                            {item.name} × {item.quantity}
+                          </div>
+                        ))
+                      : "—"}
+                  </td>
+                  <td className="py-3 px-4 font-semibold">
+                    ₹{order.total.toFixed(2)}
+                  </td>
+                  <td className="py-3 px-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm ${
+                        order.status === "Approved"
+                          ? "bg-green-100 text-green-700"
+                          : order.status === "Rejected"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
+                      {order.status}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 flex gap-2">
+                    <button
+                      onClick={() => updateOrderStatus(order.id, "Approved")}
+                      className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => updateOrderStatus(order.id, "Rejected")}
+                      className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700"
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="10"
+                  className="text-center py-4 text-gray-500"
+                >
+                  No orders found
+                </td>
+              </tr>
+            )}
+          </tbody>
         </table>
       </div>
     </div>
   );
 };
 
-export default AdminOrders; 
+export default AdminOrders;
