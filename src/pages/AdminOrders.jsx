@@ -69,23 +69,23 @@ const AdminOrders = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto overflow-y-auto max-h-[70vh] bg-white rounded-xl shadow-md">
-        <table className="min-w-full border-collapse">
-          <thead className="sticky top-0 bg-blue-600 text-white z-10">
-            <tr>
-              <th className="py-3 px-4">#</th>
-              <th className="py-3 px-4">User</th>
-              <th className="py-3 px-4">Location</th>
-              <th className="py-3 px-4">Address</th>
-              <th className="py-3 px-4">Transaction Code</th>
-              <th className="py-3 px-4">Receipt</th>
-              <th className="py-3 px-4">Items</th>
-              <th className="py-3 px-4">Total</th>
-              <th className="py-3 px-4">Status</th>
-              <th className="py-3 px-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div className="overflow-x-auto max-w-full overflow-y-auto max-h-[70vh] bg-white rounded-xl shadow-md">
+  <table className="min-w-[1200px] border-collapse">
+    <thead className="sticky top-0 bg-blue-600 text-white z-10">
+      <tr>
+        <th className="py-3 px-4">#</th>
+        <th className="py-3 px-4">User</th>
+        <th className="py-3 px-4">Location</th>
+        <th className="py-3 px-4">Address</th>
+        <th className="py-3 px-4">Transaction Code</th>
+        <th className="py-3 px-4">Receipt</th>
+        <th className="py-3 px-4">Items</th>
+        <th className="py-3 px-4">Total</th>
+        <th className="py-3 px-4">Status</th>
+        <th className="py-3 px-4">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
             {filteredOrders.length > 0 ? (
               filteredOrders.map((order, index) => (
                 <tr key={order.id} className="border-b hover:bg-gray-50">
