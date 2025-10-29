@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-// Use relative API path — works both local and hosted
+// Use relative API path for both local & live
 const API_URL = "/api/orders/orders.php";
 
 const AdminOrders = () => {
@@ -12,9 +12,11 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(API_URL);
-      setOrders(res.data);
+      // Ensure orders is always an array
+      setOrders(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Error fetching orders:", err);
+      setOrders([]); // fallback
     } finally {
       setLoading(false);
     }
@@ -40,17 +42,18 @@ const AdminOrders = () => {
     }
   };
 
-  const filteredOrders =
-    filterStatus === "All"
+  // Safely filter orders
+  const filteredOrders = Array.isArray(orders)
+    ? filterStatus === "All"
       ? orders
-      : orders.filter((order) => order.status === filterStatus);
+      : orders.filter((order) => order.status === filterStatus)
+    : [];
 
   if (loading)
     return <div className="text-center mt-10 text-lg">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      {/* Title */}
       <h2 className="text-3xl font-bold text-center mb-6 text-gray-900">
         Admin Orders Management
       </h2>
@@ -123,14 +126,16 @@ const AdminOrders = () => {
                     )}
                   </td>
                   <td className="py-3 px-4">
-                    {order.items?.map((item, i) => (
-                      <div key={i}>
-                        {item.name} × {item.quantity}
-                      </div>
-                    ))}
+                    {Array.isArray(order.items)
+                      ? order.items.map((item, i) => (
+                          <div key={i}>
+                            {item.name} × {item.quantity}
+                          </div>
+                        ))
+                      : "—"}
                   </td>
                   <td className="py-3 px-4 font-semibold text-gray-900">
-                    ₹{Number(order.total).toFixed(2)}
+                    ₹{Number(order.total || 0).toFixed(2)}
                   </td>
                   <td className="py-3 px-4">
                     <span
@@ -142,7 +147,7 @@ const AdminOrders = () => {
                           : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
-                      {order.status}
+                      {order.status || "Pending"}
                     </span>
                   </td>
                   <td className="py-3 px-4 text-center flex flex-col sm:flex-row justify-center gap-2">
