@@ -69,7 +69,6 @@ const AdminOrders = () => {
         </div>
       </div>
 
-      {/* Scrollable Table */}
       <div className="overflow-x-auto overflow-y-auto max-h-[70vh] bg-white rounded-xl shadow-md">
         <table className="min-w-full border-collapse">
           <thead className="sticky top-0 bg-blue-600 text-white z-10">
@@ -140,13 +139,13 @@ const AdminOrders = () => {
                   <td className="py-3 px-4 flex gap-2">
                     <button
                       onClick={() => updateOrderStatus(order.id, "Approved")}
-                      className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                      className="bg-green-600 text-white px-4 py-1 rounded whitespace-nowrap hover:bg-green-700"
                     >
                       Approve
                     </button>
                     <button
                       onClick={() => updateOrderStatus(order.id, "Rejected")}
-                      className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700"
+                      className="bg-red-600 text-white px-4 py-1 rounded whitespace-nowrap hover:bg-red-700"
                     >
                       Reject
                     </button>
