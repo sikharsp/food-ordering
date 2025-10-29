@@ -17,12 +17,14 @@ const AdminDashboard = () => {
     total_sales: 0,
   });
 
+  // ✅ Redirect if not logged in
   useEffect(() => {
     if (!token) {
       navigate("/admin-login");
     }
   }, [navigate, token]);
 
+  // ✅ Fetch live stats
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -33,54 +35,69 @@ const AdminDashboard = () => {
       }
     };
 
-    // Fetch initially
     fetchStats();
-
-    // Live update every 5 seconds
     const interval = setInterval(fetchStats, 5000);
-    return () => clearInterval(interval); // Clean up on unmount
+    return () => clearInterval(interval);
   }, []);
 
   const isDashboardRoot = location.pathname === "/admin-dashboard";
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
       <AdminNavbar />
-      <div className="pt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      {/* Main Content */}
+      <main className="flex-1 md:ml-64 mt-14 md:mt-0 p-6 transition-all duration-300">
+        <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-md p-6 min-h-[80vh]">
           {isDashboardRoot && (
             <>
               <h1 className="text-3xl font-bold text-gray-900 mb-6">
                 Admin Dashboard
               </h1>
-              <p className="text-gray-600 mb-6">
-                Welcome, Admin! Manage your system from here.
+              <p className="text-gray-600 mb-8">
+                Welcome back, Admin  Manage orders, menu, and reports here.
               </p>
 
-              {/* Stats Cards */}
+              {/* Stats Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h2 className="text-lg font-medium text-gray-600">Total Orders</h2>
-                  <p className="mt-2 text-2xl font-bold text-gray-900">{stats.total_orders}</p>
+                <div className="bg-gradient-to-br from-blue-100 to-blue-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                  <h2 className="text-lg font-medium text-gray-700">Total Orders</h2>
+                  <p className="mt-2 text-3xl font-bold text-blue-700">
+                    {stats.total_orders}
+                  </p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h2 className="text-lg font-medium text-gray-600">Pending Orders</h2>
-                  <p className="mt-2 text-2xl font-bold text-yellow-600">{stats.pending_orders}</p>
+
+                <div className="bg-gradient-to-br from-yellow-100 to-yellow-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                  <h2 className="text-lg font-medium text-gray-700">Pending Orders</h2>
+                  <p className="mt-2 text-3xl font-bold text-yellow-600">
+                    {stats.pending_orders}
+                  </p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h2 className="text-lg font-medium text-gray-600">Approved Orders</h2>
-                  <p className="mt-2 text-2xl font-bold text-green-600">{stats.approved_orders}</p>
+
+                <div className="bg-gradient-to-br from-green-100 to-green-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                  <h2 className="text-lg font-medium text-gray-700">Approved Orders</h2>
+                  <p className="mt-2 text-3xl font-bold text-green-700">
+                    {stats.approved_orders}
+                  </p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h2 className="text-lg font-medium text-gray-600">Total Sales</h2>
-                  <p className="mt-2 text-2xl font-bold text-blue-600">₹{stats.total_sales}</p>
+
+                <div className="bg-gradient-to-br from-purple-100 to-purple-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                  <h2 className="text-lg font-medium text-gray-700">Total Sales</h2>
+                  <p className="mt-2 text-3xl font-bold text-purple-700">
+                    ₹{stats.total_sales}
+                  </p>
                 </div>
               </div>
             </>
           )}
-          <Outlet />
+
+          {/* Nested Admin Pages */}
+          <div className={`${isDashboardRoot ? "mt-10" : "mt-0"}`}>
+            <Outlet />
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
