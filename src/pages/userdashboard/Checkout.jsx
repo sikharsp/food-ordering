@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { FiUpload } from "react-icons/fi";
 import qrImage from "./assets/IMG_7696.jpg";
 
 const Checkout = () => {
@@ -12,7 +11,38 @@ const Checkout = () => {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
-  const handleImageChange = (e) => {
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  const esewaFormSubmit = () => {
+    const data = {
+      amt: total,
+      psc: 0,
+      pdc: 0,
+      txAmt: 0,
+      tAmt: total,
+      pid: "EPAY" + Date.now(),
+      scd: "EPAYTEST",
+      su: "http://localhost:5173/payment-success",
+      fu: "http://localhost:5173/payment-failed"
+    };
+
+    const form = document.createElement("form");
+    form.action = "https://uat.esewa.com.np/epay/main";
+    form.method = "POST";
+
+    Object.entries(data).forEach(([key, value]) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = value;
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+  };
+
+  const handleReceiptUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setUploadedImage(file);
@@ -20,9 +50,9 @@ const Checkout = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!uploadedImage) return alert("Please upload the payment screenshot.");
-    if (!address) return alert("Please enter your delivery address.");
+  const handleSubmitReceipt = async () => {
+    if (!uploadedImage) return alert("Upload screenshot first!");
+    if (!address) return alert("Enter delivery address!");
 
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return navigate("/login");
@@ -30,120 +60,86 @@ const Checkout = () => {
     const formData = new FormData();
     formData.append("receipt", uploadedImage);
     formData.append("user_id", user.id);
-    formData.append("transaction_code", "TXN" + Date.now());
+    formData.append("transaction_code", "QR" + Date.now());
     formData.append("location", location);
     formData.append("address", address);
     formData.append("cart", JSON.stringify(cart));
 
-    try {
-      const res = await fetch("http://localhost/api/orders/orders.php", {
-        method: "POST",
-        body: formData,
-      });
+    const res = await fetch("http://localhost/api/orders/orders.php", {
+      method: "POST",
+      body: formData,
+    });
 
-      const data = await res.json();
-      if (data.success) {
-        alert("✅ Order submitted! We will verify your payment.");
-        setCart([]);
-        navigate("/dashboard/menu");
-      } else {
-        alert(data.message);
-      }
-    } catch {
-      alert("❌ Something went wrong!");
+    const data = await res.json();
+    if (data.success) {
+      alert("Order Confirmed ✅");
+      setCart([]);
+      navigate("/dashboard/menu");
+    } else {
+      alert("Failed ❌");
     }
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
   return (
-    <div className="bg-gray-100 min-h-screen p-4 flex justify-center">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-6">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-lg">
+        
+        <h2 className="text-2xl font-bold text-center mb-3">Checkout</h2>
 
-        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          Checkout & Payment
-        </h2>
+        <p className="text-gray-600 text-center mb-4">
+          <strong>Name:</strong> Sikhar Panthi <br />
+          <strong>Phone:</strong> 9867391430
+        </p>
 
-        {/* QR Box */}
-        <div className="bg-white border rounded-lg p-4 text-center shadow-sm">
-          <img src={qrImage} className="w-52 mx-auto rounded-lg" alt="QR" />
-          <p className="mt-3 text-gray-700 font-medium">Scan & Pay via eSewa</p>
+        <h3 className="text-lg font-semibold mb-2">Delivery Details</h3>
 
-          <div className="mt-2 text-sm text-gray-600">
-            <p><span className="font-semibold">Name:</span> Sikhar Panthi</p>
-            <p><span className="font-semibold">Number:</span> 9867391430</p>
-          </div>
+        <select 
+          value={location} 
+          onChange={(e) => setLocation(e.target.value)}
+          className="w-full mb-2 border p-2 rounded"
+        >
+          <option>Butwal</option>
+          <option>Tilottama</option>
+          <option>Bhairawa</option>
+          <option>Sainamaina</option>
+        </select>
 
-          <p className="text-xs text-green-600 mt-2">✔ Payment secure & verified manually</p>
-        </div>
+        <input
+          type="text"
+          placeholder="Enter address…"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          className="w-full mb-4 border p-2 rounded"
+        />
 
-        {/* Order Summary */}
-        <div className="bg-gray-50 mt-4 p-3 rounded-lg border">
-          <p className="font-semibold text-gray-700 mb-2">Order Summary</p>
+        <h3 className="text-lg font-semibold mb-2">Payment Method</h3>
 
-          {cart.map((item) => (
-            <div key={item.id} className="flex justify-between text-sm text-gray-700 mb-1">
-              <span>{item.name} × {item.quantity}</span>
-              <span>Rs. {item.price * item.quantity}</span>
-            </div>
-          ))}
+        <button
+          onClick={esewaFormSubmit}
+          className="w-full bg-green-600 text-white py-2 rounded-lg font-bold hover:bg-green-700 transition mb-3"
+        >
+          Pay with eSewa
+        </button>
 
-          <div className="border-t mt-2 pt-2 font-bold flex justify-between text-gray-800">
-            <span>Total:</span>
-            <span>Rs. {total}</span>
-          </div>
-        </div>
+        <p className="text-center text-gray-500 text-sm mb-3">or Scan & Pay</p>
 
-        {/* Form */}
-        <div className="mt-4 space-y-3">
-          <select
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="w-full border p-2 rounded-md"
-          >
-            <option>Butwal</option>
-            <option>Tilottama</option>
-            <option>Bhairawa</option>
-            <option>Sainamaina</option>
-          </select>
+        <img src={qrImage} className="w-64 mx-auto rounded-lg shadow mb-4" />
 
-          <input
-            type="text"
-            placeholder="Delivery address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="w-full border p-2 rounded-md"
-          />
+        <label className="block border-2 border-dashed p-4 rounded-lg text-center cursor-pointer mb-3">
+          {preview ? (
+            <img src={preview} className="w-full h-40 object-cover rounded" />
+          ) : (
+            "Upload Payment Screenshot"
+          )}
+          <input type="file" accept="image/*" onChange={handleReceiptUpload} className="hidden" />
+        </label>
 
-          {/* Upload Box */}
-          <label className="border border-dashed p-4 rounded-md cursor-pointer text-center text-gray-600 bg-gray-50 hover:bg-gray-100 transition">
-            {preview ? (
-              <img src={preview} className="w-full rounded-md" alt="Receipt" />
-            ) : (
-              <div className="flex flex-col items-center gap-2">
-                <FiUpload size={24} />
-                <span className="text-sm">Upload payment screenshot</span>
-              </div>
-            )}
-            <input type="file" className="hidden" onChange={handleImageChange} />
-          </label>
-
-          {/* Buttons */}
-          <button
-            onClick={handleSubmit}
-            className="w-full bg-green-600 text-white py-2 rounded-md font-medium hover:bg-green-700"
-          >
-            Submit Order
-          </button>
-
-          <button
-            onClick={() => navigate(-1)}
-            className="w-full bg-gray-600 text-white py-2 rounded-md font-medium hover:bg-gray-700"
-          >
-            Back
-          </button>
-        </div>
-
+        <button
+          onClick={handleSubmitReceipt}
+          className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700"
+        >
+          I Already Paid ✅
+        </button>
       </div>
     </div>
   );
