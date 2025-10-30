@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import qrImage from "./assets/IMG_7696.jpg";
@@ -11,13 +11,11 @@ const Checkout = () => {
   const [location, setLocation] = useState("Butwal");
   const [uploadedImage, setUploadedImage] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [showSummary, setShowSummary] = useState(false);
 
+  // Delivery charges
   const deliveryCharge = location === "Butwal" || location === "Tilottama" ? 100 : 150;
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + deliveryCharge;
-
-  const toggleSummary = () => setShowSummary(!showSummary);
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -28,7 +26,7 @@ const Checkout = () => {
   };
 
   const handleSubmit = async () => {
-    if (!uploadedImage) return alert("Upload receipt first!");
+    if (!uploadedImage) return alert("Upload payment screenshot first!");
     if (!address) return alert("Enter delivery address!");
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -53,59 +51,23 @@ const Checkout = () => {
     if (data.success) {
       alert("Order Confirmed ✅");
       setCart([]);
-      navigate("/tracking"); // Redirect to tracking page
+      navigate("/dashboard/menu");
     } else {
       alert("Failed ❌");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center p-3 sm:p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-100 flex justify-center items-start p-4 sm:p-6">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
 
-      {/* Slide-in Order Summary */}
-      <div className={`absolute right-0 top-0 h-full w-72 bg-white shadow-xl p-4 z-50 transition-transform duration-300 ${showSummary ? "translate-x-0" : "translate-x-full"}`}>
-        <h3 className="font-bold text-lg mb-3 text-orange-600">Order Summary</h3>
-
-        {cart.map((item) => (
-          <div key={item.id} className="flex justify-between text-sm mb-1">
-            <span>{item.name} × {item.quantity}</span>
-            <span>Rs. {item.price * item.quantity}</span>
-          </div>
-        ))}
-
-        <hr className="my-2" />
-
-        <div className="flex justify-between text-sm mb-1">
-          <span>Subtotal:</span>
-          <span>Rs {subtotal}</span>
-        </div>
-        <div className="flex justify-between text-sm mb-1">
-          <span>Delivery Charge:</span>
-          <span>Rs {deliveryCharge}</span>
-        </div>
-
-        <div className="flex justify-between font-bold text-lg text-orange-600 mt-2">
-          <span>Total</span>
-          <span>Rs {total}</span>
-        </div>
-      </div>
-
-      {/* Main Container */}
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-5">
-
-        <div className="flex justify-between items-center mb-4">
-          <button onClick={() => navigate(-1)} className="text-gray-800 text-xl">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-5">
+          <button onClick={() => navigate(-1)} className="text-gray-800 text-xl hover:text-black">
             <FiArrowLeft />
           </button>
-          <button
-            onClick={toggleSummary}
-            className="text-sm text-orange-600 font-semibold underline"
-          >
-            View Summary
-          </button>
+          <h1 className="font-bold text-xl text-gray-800">Checkout</h1>
         </div>
-
-        <h1 className="font-bold text-xl text-gray-800 mb-2">Checkout</h1>
 
         {/* User Info */}
         <div className="bg-gray-50 p-4 rounded-xl mb-4 text-sm">
@@ -113,9 +75,8 @@ const Checkout = () => {
           <p><b>Phone:</b> 9867391430</p>
         </div>
 
-        {/* Delivery Input */}
+        {/* Delivery Info */}
         <h2 className="font-semibold mb-1">Delivery Address</h2>
-
         <select
           className="w-full p-3 rounded-xl bg-gray-50 border mb-2"
           value={location}
@@ -135,13 +96,37 @@ const Checkout = () => {
           className="w-full p-3 rounded-xl bg-gray-50 border mb-4"
         />
 
-        {/* QR */}
+        {/* Order Summary */}
+        <div className="bg-orange-50 border border-orange-200 p-4 rounded-xl mb-4">
+          <h3 className="font-semibold mb-2 text-orange-700">Order Summary</h3>
+          {cart.map((item) => (
+            <div key={item.id} className="flex justify-between text-sm mb-1">
+              <span>{item.name} × {item.quantity}</span>
+              <span>Rs. {item.price * item.quantity}</span>
+            </div>
+          ))}
+          <hr className="my-2" />
+          <div className="flex justify-between text-sm mb-1">
+            <span>Subtotal:</span>
+            <span>Rs {subtotal}</span>
+          </div>
+          <div className="flex justify-between text-sm mb-1">
+            <span>Delivery Charge:</span>
+            <span>Rs {deliveryCharge}</span>
+          </div>
+          <div className="flex justify-between font-bold text-lg text-orange-600 mt-2">
+            <span>Total</span>
+            <span>Rs {total}</span>
+          </div>
+        </div>
+
+        {/* QR Payment */}
         <div className="text-center mb-4">
           <h3 className="font-semibold text-gray-700 mb-2">Scan & Pay</h3>
           <img src={qrImage} className="w-64 mx-auto rounded-xl shadow" />
         </div>
 
-        {/* Receipt Upload */}
+        {/* Upload Receipt */}
         <label className="w-full border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer mb-3 hover:border-orange-400 transition">
           {preview ? (
             <img src={preview} className="w-full h-40 object-cover rounded-lg" />
