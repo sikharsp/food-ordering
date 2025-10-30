@@ -80,9 +80,6 @@ const Checkout = () => {
           {/* Left: QR Code & Payment Info */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full"></div>
-              </div>
               <h2 className="text-2xl font-bold text-gray-800">Pay via eSewa</h2>
               <p className="text-gray-600 mt-1">Scan QR to pay instantly</p>
             </div>
