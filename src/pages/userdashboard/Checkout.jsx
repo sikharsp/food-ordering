@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { FiArrowLeft } from "react-icons/fi";
 import qrImage from "./assets/IMG_7696.jpg";
 
 const Checkout = () => {
@@ -12,7 +11,6 @@ const Checkout = () => {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
-  // Delivery charges
   const deliveryCharge = location === "Butwal" || location === "Tilottama" ? 100 : 150;
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + deliveryCharge;
@@ -59,90 +57,85 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-start p-4 sm:p-6">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-5xl p-6 flex flex-col md:flex-row gap-6">
 
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-5">
-          <button onClick={() => navigate(-1)} className="text-gray-800 text-xl hover:text-black">
-            <FiArrowLeft />
-          </button>
-          <h1 className="font-bold text-xl text-gray-800">Checkout</h1>
-        </div>
+        {/* Left Column */}
+        <div className="flex-1">
+          <h1 className="font-bold text-2xl mb-4">Checkout</h1>
 
-        {/* User Info */}
-        <div className="bg-gray-50 p-4 rounded-xl mb-4 text-sm">
-          <p><b>Name:</b> Sikhar Panthi</p>
-          <p><b>Phone:</b> 9867391430</p>
-        </div>
+          {/* Delivery Info */}
+          <div className="bg-gray-50 p-4 rounded-xl mb-4">
+            <h2 className="font-semibold mb-2">Delivery Address</h2>
+            <select
+              className="w-full p-3 rounded-xl bg-gray-50 border mb-2"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            >
+              <option>Butwal</option>
+              <option>Tilottama</option>
+              <option>Bhairawa</option>
+              <option>Sainamaina</option>
+            </select>
+            <input
+              type="text"
+              placeholder="Enter Delivery Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full p-3 rounded-xl bg-gray-50 border"
+            />
+          </div>
 
-        {/* Delivery Info */}
-        <h2 className="font-semibold mb-1">Delivery Address</h2>
-        <select
-          className="w-full p-3 rounded-xl bg-gray-50 border mb-2"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        >
-          <option>Butwal</option>
-          <option>Tilottama</option>
-          <option>Bhairawa</option>
-          <option>Sainamaina</option>
-        </select>
-
-        <input
-          type="text"
-          placeholder="Enter Delivery Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          className="w-full p-3 rounded-xl bg-gray-50 border mb-4"
-        />
-
-        {/* Order Summary */}
-        <div className="bg-orange-50 border border-orange-200 p-4 rounded-xl mb-4">
-          <h3 className="font-semibold mb-2 text-orange-700">Order Summary</h3>
-          {cart.map((item) => (
-            <div key={item.id} className="flex justify-between text-sm mb-1">
-              <span>{item.name} × {item.quantity}</span>
-              <span>Rs. {item.price * item.quantity}</span>
+          {/* Order Summary */}
+          <div className="bg-orange-50 border border-orange-200 p-4 rounded-xl mb-4">
+            <h3 className="font-semibold mb-2 text-orange-700">Order Summary</h3>
+            {cart.map((item) => (
+              <div key={item.id} className="flex justify-between text-sm mb-1">
+                <span>{item.name} × {item.quantity}</span>
+                <span>Rs. {item.price * item.quantity}</span>
+              </div>
+            ))}
+            <hr className="my-2" />
+            <div className="flex justify-between text-sm mb-1">
+              <span>Subtotal:</span>
+              <span>Rs {subtotal}</span>
             </div>
-          ))}
-          <hr className="my-2" />
-          <div className="flex justify-between text-sm mb-1">
-            <span>Subtotal:</span>
-            <span>Rs {subtotal}</span>
+            <div className="flex justify-between text-sm mb-1">
+              <span>Delivery Charge:</span>
+              <span>Rs {deliveryCharge}</span>
+            </div>
+            <div className="flex justify-between font-bold text-lg text-orange-600 mt-2">
+              <span>Total</span>
+              <span>Rs {total}</span>
+            </div>
           </div>
-          <div className="flex justify-between text-sm mb-1">
-            <span>Delivery Charge:</span>
-            <span>Rs {deliveryCharge}</span>
-          </div>
-          <div className="flex justify-between font-bold text-lg text-orange-600 mt-2">
-            <span>Total</span>
-            <span>Rs {total}</span>
-          </div>
+
+          {/* Upload Receipt */}
+          <label className="w-full border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer mb-3 hover:border-orange-400 transition">
+            {preview ? (
+              <img src={preview} className="w-full h-40 object-cover rounded-lg" />
+            ) : (
+              <span className="text-gray-500">Upload Payment Screenshot</span>
+            )}
+            <input type="file" className="hidden" onChange={handleImage} />
+          </label>
+
+          {/* Confirm Button */}
+          <button
+            onClick={handleSubmit}
+            className="w-full bg-orange-600 text-white p-3 rounded-xl font-bold hover:bg-orange-700 transition"
+          >
+            Confirm Payment ✅
+          </button>
         </div>
 
-        {/* QR Payment */}
-        <div className="text-center mb-4">
-          <h3 className="font-semibold text-gray-700 mb-2">Scan & Pay</h3>
-          <img src={qrImage} className="w-64 mx-auto rounded-xl shadow" />
+        {/* Right Column */}
+        <div className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center justify-center shadow-inner">
+          <h2 className="font-bold text-xl mb-2">Sikhar Panthi</h2>
+          <p className="text-gray-600 mb-4">📞 9867391430</p>
+          <img src={qrImage} className="w-64 h-64 rounded-xl shadow" />
+          <p className="text-gray-500 text-sm mt-3">Scan QR to Pay</p>
         </div>
 
-        {/* Upload Receipt */}
-        <label className="w-full border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer mb-3 hover:border-orange-400 transition">
-          {preview ? (
-            <img src={preview} className="w-full h-40 object-cover rounded-lg" />
-          ) : (
-            <span className="text-gray-500">Upload Payment Screenshot</span>
-          )}
-          <input type="file" className="hidden" onChange={handleImage} />
-        </label>
-
-        {/* Confirm */}
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-orange-600 text-white p-3 rounded-xl font-bold hover:bg-orange-700 transition"
-        >
-          Confirm Payment ✅
-        </button>
       </div>
     </div>
   );
