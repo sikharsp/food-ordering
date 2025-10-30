@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { FiUpload, FiArrowLeft, FiHome } from "react-icons/fi";
 import qrImage from "./assets/IMG_7696.jpg";
 
 const Checkout = () => {
@@ -10,8 +11,9 @@ const Checkout = () => {
   const [address, setAddress] = useState("");
   const [uploadedImage, setUploadedImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleBackClick = () => navigate(-1);
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -22,15 +24,13 @@ const Checkout = () => {
   };
 
   const handleSubmit = async () => {
-    if (!uploadedImage) return alert("Please upload receipt first!");
-    if (!address) return alert("Please enter your delivery address!");
+    if (!uploadedImage) return alert("Please upload your payment receipt!");
+    if (!address) return alert("Enter delivery address first!");
 
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-      alert("User not logged in!");
-      navigate("/login");
-      return;
-    }
+    if (!user) return navigate("/login");
+
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("receipt", uploadedImage);
@@ -45,98 +45,110 @@ const Checkout = () => {
         method: "POST",
         body: formData,
       });
-      const data = await res.json();
 
+      const data = await res.json();
       if (data.success) {
-        alert("Order placed successfully!");
         setCart([]);
         navigate("/dashboard/menu");
+        alert("🎉 Payment submitted! Order is being verified.");
       } else {
-        alert("Error: " + data.message);
+        alert(data.message);
       }
-    } catch (err) {
-      console.error(err);
-      alert("Failed to place order.");
+    } catch {
+      alert("❌ Something went wrong! Try again.");
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4 sm:p-6">
-      <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800 text-center">
-        Complete Your Payment
-      </h2>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 p-4 flex flex-col items-center">
+      
+      {/* Header */}
+      <div className="w-full max-w-lg flex items-center gap-3 mb-4">
+        <button onClick={() => navigate(-1)} className="text-gray-700">
+          <FiArrowLeft size={22} />
+        </button>
+        <h2 className="text-xl font-bold tracking-wide text-gray-800">
+          Secure Checkout
+        </h2>
+      </div>
 
-      <img
-        src={qrImage}
-        alt="Payment QR"
-        className="w-64 sm:w-72 h-64 sm:h-72 rounded-xl shadow-lg mb-6 border border-gray-300"
-      />
+      {/* Card */}
+      <div className="bg-white shadow-xl w-full max-w-lg p-6 rounded-2xl space-y-6 border border-orange-200">
 
-      <div className="flex flex-col items-center bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h3 className="text-lg sm:text-xl font-semibold mb-4">
-          Delivery Details
-        </h3>
+        {/* QR */}
+        <div className="text-center">
+          <p className="font-semibold text-gray-700 mb-2">Scan & Pay via eSewa</p>
+          <img src={qrImage} className="w-64 mx-auto rounded-xl shadow" />
+          <p className="text-xs text-orange-600 mt-1">Payment auto-verified in 5–10 mins</p>
+        </div>
 
+        {/* Order Info */}
+        <div className="bg-orange-50 p-4 rounded-xl">
+          <p className="font-semibold text-gray-700 mb-2">Order Summary</p>
+          {cart.map((item) => (
+            <div key={item.id} className="flex justify-between text-sm text-gray-700">
+              <span>{item.name} × {item.quantity}</span>
+              <span>Rs. {item.price * item.quantity}</span>
+            </div>
+          ))}
+          <div className="border-t mt-2 pt-2 font-bold text-gray-800 flex justify-between">
+            <span>Total</span>
+            <span>Rs. {total}</span>
+          </div>
+        </div>
+
+        {/* Location */}
         <select
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="w-full border border-gray-300 px-4 py-2 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
+          className="w-full border p-2 rounded-xl focus:ring focus:ring-orange-300"
         >
-          <option value="Butwal">Butwal</option>
-          <option value="Tilottama">Tilottama</option>
-          <option value="Bhairawa">Bhairawa</option>
-          <option value="Sainamaina">Sainamaina</option>
+          <option>Butwal</option>
+          <option>Tilottama</option>
+          <option>Bhairawa</option>
+          <option>Sainamaina</option>
         </select>
 
+        {/* Address */}
         <input
           type="text"
-          placeholder="Enter address (e.g., Butwal, Manigram)"
+          placeholder="Delivery address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          className="w-full border border-gray-300 px-4 py-2 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
+          className="w-full border p-2 rounded-xl focus:ring focus:ring-orange-300"
         />
 
+        {/* Upload */}
         <label
-          htmlFor="fileUpload"
-          className="w-full h-48 sm:h-52 border-2 border-dashed border-blue-400 flex flex-col items-center justify-center cursor-pointer rounded-xl hover:border-blue-600 transition mb-4"
+          htmlFor="file"
+          className="border-2 border-dashed p-6 rounded-xl flex flex-col items-center justify-center cursor-pointer bg-orange-50 hover:bg-orange-100 transition"
         >
           {preview ? (
-            <img
-              src={preview}
-              alt="Receipt Preview"
-              className="w-full h-full object-cover rounded-xl"
-            />
+            <img src={preview} className="w-full rounded-lg" />
           ) : (
-            <p className="text-gray-500 text-sm sm:text-base text-center">
-              Drag & drop or click to upload receipt
-            </p>
+            <>
+              <FiUpload size={32} className="text-orange-500" />
+              <p className="text-sm text-gray-500 mt-2">Upload payment screenshot</p>
+            </>
           )}
         </label>
+        <input id="file" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
 
-        <input
-          id="fileUpload"
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="hidden"
-        />
-
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
-          <button
-            onClick={handleSubmit}
-            className="flex-1 bg-blue-600 text-white py-2 rounded-lg shadow hover:bg-blue-700 transition font-semibold"
-          >
-            Submit
-          </button>
-          <button
-            onClick={handleBackClick}
-            className="flex-1 bg-gray-500 text-white py-2 rounded-lg shadow hover:bg-gray-600 transition font-semibold"
-          >
-            Back
-          </button>
-        </div>
+        {/* Submit */}
+        <button
+          onClick={handleSubmit}
+          className="w-full bg-orange-600 text-white font-semibold py-2 rounded-xl shadow hover:bg-orange-700 transition"
+          disabled={loading}
+        >
+          {loading ? "Submitting..." : "Submit Payment"}
+        </button>
       </div>
+
+      <p className="text-xs text-gray-500 mt-4">
+        🔒 Secure Payment — Receipt stored safely
+      </p>
     </div>
   );
 };
