@@ -1,48 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { FiArrowLeft } from "react-icons/fi";
 import qrImage from "./assets/IMG_7696.jpg";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { cart, setCart } = useOutletContext();
 
-  const [location, setLocation] = useState("Butwal");
   const [address, setAddress] = useState("");
+  const [location, setLocation] = useState("Butwal");
   const [uploadedImage, setUploadedImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [showSummary, setShowSummary] = useState(false);
 
-  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const deliveryCharge = location === "Butwal" || location === "Tilottama" ? 100 : 150;
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = subtotal + deliveryCharge;
 
-  const esewaFormSubmit = () => {
-    const data = {
-      amt: total,
-      psc: 0,
-      pdc: 0,
-      txAmt: 0,
-      tAmt: total,
-      pid: "EPAY" + Date.now(),
-      scd: "EPAYTEST",
-      su: "http://localhost:5173/payment-success",
-      fu: "http://localhost:5173/payment-failed"
-    };
+  const toggleSummary = () => setShowSummary(!showSummary);
 
-    const form = document.createElement("form");
-    form.action = "https://uat.esewa.com.np/epay/main";
-    form.method = "POST";
-
-    Object.entries(data).forEach(([key, value]) => {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = key;
-      input.value = value;
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(form);
-    form.submit();
-  };
-
-  const handleReceiptUpload = (e) => {
+  const handleImage = (e) => {
     const file = e.target.files[0];
     if (file) {
       setUploadedImage(file);
@@ -50,8 +27,8 @@ const Checkout = () => {
     }
   };
 
-  const handleSubmitReceipt = async () => {
-    if (!uploadedImage) return alert("Upload screenshot first!");
+  const handleSubmit = async () => {
+    if (!uploadedImage) return alert("Upload receipt first!");
     if (!address) return alert("Enter delivery address!");
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -64,6 +41,8 @@ const Checkout = () => {
     formData.append("location", location);
     formData.append("address", address);
     formData.append("cart", JSON.stringify(cart));
+    formData.append("delivery_charge", deliveryCharge);
+    formData.append("total_amount", total);
 
     const res = await fetch("http://localhost/api/orders/orders.php", {
       method: "POST",
@@ -74,29 +53,73 @@ const Checkout = () => {
     if (data.success) {
       alert("Order Confirmed ✅");
       setCart([]);
-      navigate("/dashboard/menu");
+      navigate("/tracking"); // Redirect to tracking page
     } else {
       alert("Failed ❌");
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-lg">
-        
-        <h2 className="text-2xl font-bold text-center mb-3">Checkout</h2>
+    <div className="min-h-screen bg-gray-100 flex justify-center p-3 sm:p-6 relative overflow-hidden">
 
-        <p className="text-gray-600 text-center mb-4">
-          <strong>Name:</strong> Sikhar Panthi <br />
-          <strong>Phone:</strong> 9867391430
-        </p>
+      {/* Slide-in Order Summary */}
+      <div className={`absolute right-0 top-0 h-full w-72 bg-white shadow-xl p-4 z-50 transition-transform duration-300 ${showSummary ? "translate-x-0" : "translate-x-full"}`}>
+        <h3 className="font-bold text-lg mb-3 text-orange-600">Order Summary</h3>
 
-        <h3 className="text-lg font-semibold mb-2">Delivery Details</h3>
+        {cart.map((item) => (
+          <div key={item.id} className="flex justify-between text-sm mb-1">
+            <span>{item.name} × {item.quantity}</span>
+            <span>Rs. {item.price * item.quantity}</span>
+          </div>
+        ))}
 
-        <select 
-          value={location} 
+        <hr className="my-2" />
+
+        <div className="flex justify-between text-sm mb-1">
+          <span>Subtotal:</span>
+          <span>Rs {subtotal}</span>
+        </div>
+        <div className="flex justify-between text-sm mb-1">
+          <span>Delivery Charge:</span>
+          <span>Rs {deliveryCharge}</span>
+        </div>
+
+        <div className="flex justify-between font-bold text-lg text-orange-600 mt-2">
+          <span>Total</span>
+          <span>Rs {total}</span>
+        </div>
+      </div>
+
+      {/* Main Container */}
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-5">
+
+        <div className="flex justify-between items-center mb-4">
+          <button onClick={() => navigate(-1)} className="text-gray-800 text-xl">
+            <FiArrowLeft />
+          </button>
+          <button
+            onClick={toggleSummary}
+            className="text-sm text-orange-600 font-semibold underline"
+          >
+            View Summary
+          </button>
+        </div>
+
+        <h1 className="font-bold text-xl text-gray-800 mb-2">Checkout</h1>
+
+        {/* User Info */}
+        <div className="bg-gray-50 p-4 rounded-xl mb-4 text-sm">
+          <p><b>Name:</b> Sikhar Panthi</p>
+          <p><b>Phone:</b> 9867391430</p>
+        </div>
+
+        {/* Delivery Input */}
+        <h2 className="font-semibold mb-1">Delivery Address</h2>
+
+        <select
+          className="w-full p-3 rounded-xl bg-gray-50 border mb-2"
+          value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="w-full mb-2 border p-2 rounded"
         >
           <option>Butwal</option>
           <option>Tilottama</option>
@@ -106,39 +129,34 @@ const Checkout = () => {
 
         <input
           type="text"
-          placeholder="Enter address…"
+          placeholder="Enter Delivery Address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          className="w-full mb-4 border p-2 rounded"
+          className="w-full p-3 rounded-xl bg-gray-50 border mb-4"
         />
 
-        <h3 className="text-lg font-semibold mb-2">Payment Method</h3>
+        {/* QR */}
+        <div className="text-center mb-4">
+          <h3 className="font-semibold text-gray-700 mb-2">Scan & Pay</h3>
+          <img src={qrImage} className="w-64 mx-auto rounded-xl shadow" />
+        </div>
 
-        <button
-          onClick={esewaFormSubmit}
-          className="w-full bg-green-600 text-white py-2 rounded-lg font-bold hover:bg-green-700 transition mb-3"
-        >
-          Pay with eSewa
-        </button>
-
-        <p className="text-center text-gray-500 text-sm mb-3">or Scan & Pay</p>
-
-        <img src={qrImage} className="w-64 mx-auto rounded-lg shadow mb-4" />
-
-        <label className="block border-2 border-dashed p-4 rounded-lg text-center cursor-pointer mb-3">
+        {/* Receipt Upload */}
+        <label className="w-full border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer mb-3 hover:border-orange-400 transition">
           {preview ? (
-            <img src={preview} className="w-full h-40 object-cover rounded" />
+            <img src={preview} className="w-full h-40 object-cover rounded-lg" />
           ) : (
-            "Upload Payment Screenshot"
+            <span className="text-gray-500">Upload Payment Screenshot</span>
           )}
-          <input type="file" accept="image/*" onChange={handleReceiptUpload} className="hidden" />
+          <input type="file" className="hidden" onChange={handleImage} />
         </label>
 
+        {/* Confirm */}
         <button
-          onClick={handleSubmitReceipt}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700"
+          onClick={handleSubmit}
+          className="w-full bg-orange-600 text-white p-3 rounded-xl font-bold hover:bg-orange-700 transition"
         >
-          I Already Paid ✅
+          Confirm Payment ✅
         </button>
       </div>
     </div>
