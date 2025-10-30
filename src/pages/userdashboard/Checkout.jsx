@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { FiArrowLeft } from "react-icons/fi";
 import qrImage from "./assets/IMG_7696.jpg";
 
 const Checkout = () => {
@@ -57,9 +58,27 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-start p-4 sm:p-6">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-5xl p-6 flex flex-col md:flex-row gap-6">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-5xl p-6 flex flex-col md:flex-row gap-6 relative">
 
-        {/* Left Column */}
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-4 left-4 text-gray-800 text-xl hover:text-black z-50"
+        >
+          <FiArrowLeft />
+        </button>
+
+        {/* Left Column: QR + Name */}
+        <div className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center justify-center shadow-inner">
+          <h2 className="font-bold text-xl mb-2">Sikhar Panthi</h2>
+          <p className="text-gray-600 mb-4">📞 9867391430</p>
+          <img src={qrImage} className="w-64 h-64 rounded-xl shadow mb-3" />
+          <p className="text-gray-500 text-sm text-center">
+            Scan QR to Pay
+          </p>
+        </div>
+
+        {/* Right Column: Delivery + Order Summary + Upload */}
         <div className="flex-1">
           <h1 className="font-bold text-2xl mb-4">Checkout</h1>
 
@@ -110,9 +129,9 @@ const Checkout = () => {
           </div>
 
           {/* Upload Receipt */}
-          <label className="w-full border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer mb-3 hover:border-orange-400 transition">
+          <label className="w-full border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer mb-3 hover:border-orange-400 transition">
             {preview ? (
-              <img src={preview} className="w-full h-40 object-cover rounded-lg" />
+              <img src={preview} className="w-full h-48 object-cover rounded-lg" />
             ) : (
               <span className="text-gray-500">Upload Payment Screenshot</span>
             )}
@@ -122,18 +141,15 @@ const Checkout = () => {
           {/* Confirm Button */}
           <button
             onClick={handleSubmit}
-            className="w-full bg-orange-600 text-white p-3 rounded-xl font-bold hover:bg-orange-700 transition"
+            className="w-full bg-orange-600 text-white p-3 rounded-xl font-bold hover:bg-orange-700 transition mb-2"
           >
             Confirm Payment ✅
           </button>
-        </div>
 
-        {/* Right Column */}
-        <div className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center justify-center shadow-inner">
-          <h2 className="font-bold text-xl mb-2">Sikhar Panthi</h2>
-          <p className="text-gray-600 mb-4">📞 9867391430</p>
-          <img src={qrImage} className="w-64 h-64 rounded-xl shadow" />
-          <p className="text-gray-500 text-sm mt-3">Scan QR to Pay</p>
+          {/* Secure Payment Info */}
+          <p className="text-gray-500 text-sm text-center">
+            Secure Payment • Manually verified within 2-5 minutes
+          </p>
         </div>
 
       </div>
