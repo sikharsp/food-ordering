@@ -70,26 +70,30 @@ const Checkout = () => {
 
         {/* Left Column: QR + Name */}
         <div className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center justify-center shadow-inner">
-  <h2 className="font-bold text-xl mb-2">Sikhar Panthi</h2>
+          <h2 className="font-bold text-xl mb-2">Sikhar Panthi</h2>
 
-  <div className="flex items-center gap-2 mb-4">
-    <p className="text-gray-600">📞 9867391430</p>
-    <button
-      onClick={() => {
-        navigator.clipboard.writeText("9867391430");
-        alert("Phone number copied!");
-      }}
-      className="text-blue-500 text-sm hover:underline"
-    >
-      Copy
-    </button>
-  </div>
+          <div className="flex items-center gap-2 mb-4">
+            <p className="text-gray-600">📞 9867391430</p>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText("9867391430");
+                alert("Phone number copied!");
+              }}
+              className="text-blue-500 text-sm hover:underline"
+            >
+              Copy
+            </button>
+          </div>
 
-  <img src={qrImage} className="w-64 h-64 rounded-xl shadow mb-3" />
-  <p className="text-gray-500 text-sm text-center">
-    Scan QR to Pay
-  </p>
-</div>
+          <img src={qrImage} className="w-64 h-64 rounded-xl shadow mb-3" />
+          <p className="text-gray-500 text-sm text-center">Scan QR to Pay</p>
+
+          <div className="mt-4 text-center">
+            <p className="text-gray-700 font-medium">eSewa</p>
+            <p className="text-gray-600">{`Sikhar Panthi`}</p>
+            <p className="text-gray-600">{`9867391430`}</p>
+          </div>
+        </div>
 
         {/* Right Column: Delivery + Order Summary + Upload */}
         <div className="flex-1">
