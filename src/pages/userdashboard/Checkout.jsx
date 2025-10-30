@@ -74,9 +74,9 @@ const Checkout = () => {
 
         {/* Left Column: QR + Payment Info */}
         <div className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center justify-center shadow-inner">
-          <h2 className="font-bold text-xl mb-2">Sikhar Panthi</h2>
+          <h2 className="font-bold text-xl mb-2"> Name: Sikhar Panthi</h2>
           <div className="flex items-center gap-2 mb-4">
-            <p className="text-gray-600">📞 9867391430</p>
+            <p className="text-gray-600">number: 9867391430</p>
             <button
               onClick={() => {
                 navigator.clipboard.writeText("9867391430");
@@ -91,13 +91,7 @@ const Checkout = () => {
           <img src={qrImage} alt="eSewa QR Code" className="w-64 h-64 rounded-xl shadow mb-3" />
           <p className="text-gray-500 text-sm text-center">Scan QR to Pay</p>
 
-          {/* eSewa Payment Details */}
-          <div className="mt-4 text-center bg-white p-3 rounded-lg shadow-sm">
-            <p className="text-green-600 font-medium">eSewa</p>
-            <p className="text-gray-700 font-semibold">Sikhar Panthi</p>
-            <p className="text-gray-600">9867391430</p>
-          </div>
-        </div>
+          
 
         {/* Right Column: Checkout Form */}
         <div className="flex-1">
