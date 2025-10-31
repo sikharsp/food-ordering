@@ -66,14 +66,13 @@ function App() {
           </Route>
 
           {/* Admin Routes */}
-          <Route path="/admin/promos" element={<PromoAdmin />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin-dashboard/*" element={<AdminDashboard />}>
             <Route path="menu" element={<MenuAdmin />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="reports" element={<ReportsAdmin />} />
             <Route path="message" element={<AdminContact />} />
-
+            <Route path="promos" element={<PromoAdmin />} />
           </Route>
         </Routes>
       </div>
