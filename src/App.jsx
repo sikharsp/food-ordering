@@ -21,6 +21,7 @@ import Checkout from "./pages/userdashboard/Checkout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ScrollToTop from "./components/ScrollToTop";
 import AdminContact from "./pages/AdminContact";
+import PromoAdmin from "./pages/PromoAdmin";
 
 const PublicLayout = () => (
   <>
@@ -65,6 +66,7 @@ function App() {
           </Route>
 
           {/* Admin Routes */}
+          <Route path="/admin/promos" element={<PromoAdmin />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin-dashboard/*" element={<AdminDashboard />}>
             <Route path="menu" element={<MenuAdmin />} />
