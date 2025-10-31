@@ -83,17 +83,7 @@ const AdminNavbar = () => {
             className="flex items-center px-6 py-2 hover:bg-gray-800 transition-all"
           >
             <FiMessageSquare className="mr-3" /> Message
-          </Link>
- <Link
-            to="/admin-dashboard/promos"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center px-6 py-2 hover:bg-gray-800 transition-all"
-          >
-            <FiMessageSquare className="mr-3" /> Promos
-          </Link>
-
-
-          
+          </Link> 
         </nav>
 
         {/* Logout Button */}
