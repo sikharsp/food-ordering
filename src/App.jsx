@@ -21,7 +21,7 @@ import Checkout from "./pages/userdashboard/Checkout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ScrollToTop from "./components/ScrollToTop";
 import AdminContact from "./pages/AdminContact";
-import PromoAdmin from "./pages/PromoAdmin";
+// import PromoAdmin from "./pages/PromoAdmin";
 
 const PublicLayout = () => (
   <>
@@ -72,7 +72,7 @@ function App() {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="reports" element={<ReportsAdmin />} />
             <Route path="message" element={<AdminContact />} />
-            <Route path="promos" element={<PromoAdmin />} />
+            {/* <Route path="promos" element={<PromoAdmin />} /> */}
           </Route>
         </Routes>
       </div>
