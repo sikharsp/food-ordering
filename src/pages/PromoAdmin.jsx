@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const API_BASE = "http://localhost/api/promos/promos.php";
+const API_BASE = "http://localhost/api/promos.php"; // change to your backend
 
 const PromoAdmin = () => {
   const [code, setCode] = useState("");
@@ -9,19 +9,13 @@ const PromoAdmin = () => {
   const [expiry, setExpiry] = useState("");
   const [oneTimeUse, setOneTimeUse] = useState(false);
   const [newUserOnly, setNewUserOnly] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [promos, setPromos] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchPromos = async () => {
-    try {
-      const body = new FormData();
-      body.append("action", "list");
-      const res = await fetch(API_BASE, { method: "POST", body });
-      const data = await res.json();
-      if (data.success) setPromos(data.promos);
-    } catch (err) {
-      console.error(err);
-    }
+    const res = await fetch(API_BASE + "?getAll=1");
+    const data = await res.json();
+    if (data.success) setPromos(data.data);
   };
 
   useEffect(() => {
@@ -31,6 +25,7 @@ const PromoAdmin = () => {
   const handleCreate = async () => {
     if (!code || !amount) return alert("Fill all fields");
     setLoading(true);
+
     try {
       const body = new FormData();
       body.append("action", "create");
@@ -45,31 +40,35 @@ const PromoAdmin = () => {
       const data = await res.json();
 
       if (data.success) {
-        alert("Promo created successfully");
+        alert("Promo Created");
+        fetchPromos();
         setCode("");
         setAmount("");
         setExpiry("");
         setOneTimeUse(false);
         setNewUserOnly(false);
-        fetchPromos();
       } else {
-        alert(data.message || "Failed to create");
+        alert(data.message || "Failed to create promo");
       }
     } catch (err) {
       console.error(err);
       alert("Network error");
     }
+
     setLoading(false);
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete this promo?")) return;
+    if (!window.confirm("Delete this promo?")) return;
+
     try {
       const body = new FormData();
       body.append("action", "delete");
       body.append("promo_id", id);
+
       const res = await fetch(API_BASE, { method: "POST", body });
       const data = await res.json();
+
       if (data.success) fetchPromos();
       else alert(data.message || "Failed");
     } catch (err) {
@@ -86,7 +85,7 @@ const PromoAdmin = () => {
           <input
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="Promo Code"
+            placeholder="Code e.g. PROMO10"
             className="p-2 border rounded"
           />
 
@@ -95,16 +94,16 @@ const PromoAdmin = () => {
             onChange={(e) => setType(e.target.value)}
             className="p-2 border rounded"
           >
-            <option value="percent">Percent (%)</option>
-            <option value="flat">Flat (Rs)</option>
+            <option value="percent">Percent</option>
+            <option value="flat">Flat</option>
           </select>
 
           <input
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
+            placeholder="Amount"
             className="p-2 border rounded"
-            placeholder="Discount Amount"
           />
 
           <input
@@ -120,7 +119,8 @@ const PromoAdmin = () => {
               checked={oneTimeUse}
               onChange={(e) => setOneTimeUse(e.target.checked)}
             />
-            One‑time</label>
+            One-time use
+          </label>
 
           <label className="flex items-center gap-2">
             <input
@@ -128,7 +128,8 @@ const PromoAdmin = () => {
               checked={newUserOnly}
               onChange={(e) => setNewUserOnly(e.target.checked)}
             />
-            New‑user</label>
+            New users only
+          </label>
         </div>
 
         <div className="mt-3">
@@ -137,13 +138,14 @@ const PromoAdmin = () => {
             onClick={handleCreate}
             className="px-4 py-2 bg-green-600 text-white rounded"
           >
-            {loading ? "Creating..." : "Create Promo"}
+            {loading ? "Saving..." : "Create Promo"}
           </button>
         </div>
       </div>
 
       <div className="bg-white p-4 rounded shadow">
         <h3 className="font-semibold mb-3">Existing Promos</h3>
+
         <table className="w-full text-sm">
           <thead>
             <tr>
@@ -151,11 +153,12 @@ const PromoAdmin = () => {
               <th>Type</th>
               <th>Amount</th>
               <th>Expiry</th>
-              <th>One‑time</th>
-              <th>New‑user</th>
+              <th>One-time</th>
+              <th>New user</th>
               <th>Action</th>
             </tr>
           </thead>
+
           <tbody>
             {promos.map((p) => (
               <tr key={p.id} className="border-t">
