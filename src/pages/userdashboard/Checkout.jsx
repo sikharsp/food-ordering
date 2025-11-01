@@ -16,7 +16,7 @@ const Checkout = () => {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + deliveryCharge;
 
-  // Handle screenshot upload
+  // Handle file upload
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -25,11 +25,10 @@ const Checkout = () => {
     }
   };
 
-  // Submit order after manual payment
+  // Submit order after uploading screenshot
   const handleSubmit = async () => {
     if (!uploadedImage) return alert("Please upload payment screenshot!");
     if (!address.trim()) return alert("Please enter delivery address!");
-
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return navigate("/login");
 
@@ -65,17 +64,19 @@ const Checkout = () => {
     }
   };
 
-  // ✅ eSewa Sandbox Direct Payment
+  // Direct eSewa payment
   const handleESewaPay = () => {
     if (cart.length === 0) return alert("Cart is empty!");
-    const txAmt = deliveryCharge; // extra charges
-    const tAmt = subtotal + txAmt; // total amount
-    const pid = "TXN" + Date.now(); // unique transaction ID
-    const scd = "EPAYTEST"; // sandbox merchant code
-    const su = "http://localhost/success"; // success redirect
-    const fu = "http://localhost/fail";    // failure redirect
+    const amt = subtotal;
+    const psc = 0;
+    const pdc = deliveryCharge;
+    const tAmt = amt + psc + pdc;
+    const pid = "TXN" + Date.now();
+    const scd = "EPAYTEST";
+    const su = "http://localhost/success";
+    const fu = "http://localhost/fail";
 
-    const url = `https://esewa.com.np/epay/main?amt=${subtotal}&txAmt=${txAmt}&psc=0&pdc=${deliveryCharge}&tAmt=${tAmt}&pid=${pid}&scd=${scd}&su=${su}&fu=${fu}`;
+    const url = `https://esewa.com.np/epay/main?amt=${amt}&psc=${psc}&pdc=${pdc}&tAmt=${tAmt}&pid=${pid}&scd=${scd}&su=${su}&fu=${fu}`;
     window.location.href = url;
   };
 
@@ -87,12 +88,11 @@ const Checkout = () => {
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium mb-6 transition-colors"
         >
-          <FiArrowLeft className="text-xl" />
-          Back to Cart
+          <FiArrowLeft className="text-xl" /> Back to Cart
         </button>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Section */}
+          {/* Left: eSewa Payment */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-800">Pay via eSewa</h2>
@@ -126,7 +126,7 @@ const Checkout = () => {
               </div>
             </div>
 
-            {/* Direct Payment Button */}
+            {/* Direct eSewa Pay Button */}
             <button
               onClick={handleESewaPay}
               className="w-full mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
@@ -139,11 +139,10 @@ const Checkout = () => {
             </p>
           </div>
 
-          {/* Right Section */}
+          {/* Right: Checkout Form */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Complete Your Order</h1>
 
-            {/* Delivery Info */}
             <div className="space-y-4 mb-6">
               <div>
                 <label className="flex items-center gap-2 text-gray-700 font-medium mb-2">
@@ -218,7 +217,7 @@ const Checkout = () => {
               </label>
             </div>
 
-            {/* Confirm */}
+            {/* Confirm Button */}
             <button
               onClick={handleSubmit}
               disabled={loading}
@@ -236,7 +235,7 @@ const Checkout = () => {
               )}
             </button>
 
-            {/* Info Footer */}
+            {/* Footer Info */}
             <div className="text-center text-sm text-gray-600 mt-4 space-y-1">
               <p>✅ Secure Payment | 🕒 Manual verification 2–5 mins</p>
               <p className="flex items-center justify-center gap-2">
