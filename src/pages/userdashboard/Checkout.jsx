@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { FiArrowLeft, FiMapPin, FiUpload, FiCheckCircle } from "react-icons/fi";
 import qrImage from "./assets/IMG_7696.jpg";
-import { v4 as uuid } from "uuid";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -33,10 +32,11 @@ const Checkout = () => {
     if (!user) return navigate("/login");
 
     setLoading(true);
+
     const formData = new FormData();
     formData.append("receipt", uploadedImage);
     formData.append("user_id", user.id);
-    formData.append("transaction_code", "QR" + Date.now());
+    formData.append("transaction_code", "TX" + Date.now()); // simple unique code
     formData.append("location", location);
     formData.append("address", address);
     formData.append("cart", JSON.stringify(cart));
@@ -64,16 +64,6 @@ const Checkout = () => {
       setLoading(false);
     }
   };
-
-  // Unique transaction ID for eSewa
-  const txId = uuid();
-
-  // Success & failure URLs for eSewa redirect
-  const successURL = "https://your-public-success-url.com/success"; // Replace with your live/test URL
-  const failureURL = "https://your-public-failure-url.com/failure"; // Replace with your live/test URL
-
-  // eSewa sandbox URL
-  const esewaURL = `https://esewa.com.np/epay/epay_test?amt=${total}&tAmt=${total}&txAmt=0&psc=0&pdc=0&scd=EPAYTEST&pid=${txId}&su=${successURL}&fu=${failureURL}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-pink-50 py-8 px-4 sm:px-6">
@@ -117,15 +107,12 @@ const Checkout = () => {
               </div>
             </div>
 
-            {/* Direct Pay Button */}
-            <a
-              href={esewaURL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full mt-6 inline-block text-center bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
+            <button
+              onClick={() => window.location.href = `https://esewa.com.np/epay/main?amt=${total}&p1=wallet&p2=9867391430`}
+              className="w-full mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
             >
               Pay Direct via eSewa
-            </a>
+            </button>
 
             <p className="text-center text-sm text-gray-500 mt-3">
               Pay Rs {total} → Then upload screenshot below
