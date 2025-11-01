@@ -16,6 +16,8 @@ const Checkout = () => {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + deliveryCharge;
 
+  const esewaLink = `https://esewa.com.np/epay/main?amt=${total}&tAmt=${total}&pdc=0&psc=0&txAmt=0&pid=ORD${Date.now()}&scd=EPAYTEST&su=https://yourwebsite.com/success&fu=https://yourwebsite.com/fail`;
+
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -77,7 +79,7 @@ const Checkout = () => {
         </button>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left: QR Code & Payment Info */}
+          {/* Left: QR Payment */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-800">Pay via eSewa</h2>
@@ -98,7 +100,14 @@ const Checkout = () => {
                   <p className="text-sm opacity-90">Pay to</p>
                   <p className="text-xl font-bold">Sikhar Panthi</p>
                   <p className="text-lg">9867391430</p>
+
+                  {/* Click-to-Call */}
+                  <a href="tel:9867391430" className="text-sm underline mt-1 block">
+                    Call Support
+                  </a>
                 </div>
+
+                {/* Copy Number */}
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText("9867391430");
@@ -111,16 +120,25 @@ const Checkout = () => {
               </div>
             </div>
 
+            {/* Direct eSewa Button */}
+            <a
+              href={esewaLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl text-center transition"
+            >
+              Pay via eSewa App
+            </a>
+
             <p className="text-center text-sm text-gray-500 mt-6">
-              Scan QR → Pay Rs {total} → Upload Screenshot
+              Scan QR / Click Pay → Pay Rs {total} → Upload Screenshot
             </p>
           </div>
 
-          {/* Right: Checkout Form */}
+          {/* Right: Form */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Complete Your Order</h1>
 
-            {/* Delivery Address */}
             <div className="space-y-4 mb-6">
               <div>
                 <label className="flex items-center gap-2 text-gray-700 font-medium mb-2">
@@ -153,29 +171,25 @@ const Checkout = () => {
               </div>
             </div>
 
-            {/* Order Summary */}
+            {/* Summary */}
             <div className="bg-gradient-to-r from-orange-50 to-pink-50 p-5 rounded-2xl mb-6 border border-orange-100">
               <h3 className="font-bold text-lg text-orange-700 mb-3">Order Summary</h3>
               <div className="space-y-2 text-sm">
                 {cart.map((item) => (
                   <div key={item.id} className="flex justify-between">
-                    <span className="text-gray-700">
-                      {item.name} × {item.quantity}
-                    </span>
+                    <span className="text-gray-700">{item.name} × {item.quantity}</span>
                     <span className="font-medium">Rs. {item.price * item.quantity}</span>
                   </div>
                 ))}
               </div>
               <hr className="my-3 border-dashed border-orange-200" />
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span>Rs. {subtotal}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Delivery</span>
-                  <span>Rs. {deliveryCharge}</span>
-                </div>
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>Rs. {subtotal}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Delivery</span>
+                <span>Rs. {deliveryCharge}</span>
               </div>
               <div className="flex justify-between items-center mt-4 pt-3 border-t border-orange-200">
                 <span className="text-lg font-bold text-gray-800">Total</span>
@@ -207,12 +221,7 @@ const Checkout = () => {
                     <p>Click to upload</p>
                   </div>
                 )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImage}
-                />
+                <input type="file" accept="image/*" className="hidden" onChange={handleImage} />
               </label>
             </div>
 
@@ -229,8 +238,7 @@ const Checkout = () => {
                 </span>
               ) : (
                 <>
-                  <FiCheckCircle className="text-xl" />
-                  Confirm Payment
+                  <FiCheckCircle className="text-xl" /> Confirm Payment
                 </>
               )}
             </button>
