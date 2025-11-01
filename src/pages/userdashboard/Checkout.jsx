@@ -64,6 +64,16 @@ const Checkout = () => {
     }
   };
 
+  const handleESewaPay = () => {
+    const txId = "ORD" + Date.now(); // unique transaction id
+    const successURL = encodeURIComponent("http://localhost:3000/payment-success");
+    const failureURL = encodeURIComponent("http://localhost:3000/payment-failed");
+
+    const esewaURL = `https://esewa.com.np/epay/main?amt=${total}&txAmt=0&pdc=FoodHub&psc=0&tAmt=${total}&scd=EPAYTEST&pid=${txId}&su=${successURL}&fu=${failureURL}`;
+
+    window.location.href = esewaURL;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-pink-50 py-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
@@ -84,11 +94,7 @@ const Checkout = () => {
             </div>
 
             <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl">
-              <img
-                src={qrImage}
-                alt="eSewa QR Code"
-                className="w-full max-w-xs mx-auto rounded-xl shadow-lg"
-              />
+              <img src={qrImage} alt="eSewa QR Code" className="w-full max-w-xs mx-auto rounded-xl shadow-lg" />
             </div>
 
             <div className="mt-8 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-md">
@@ -104,16 +110,13 @@ const Checkout = () => {
                     alert("Copied eSewa Number");
                   }}
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                >
-                  Copy number
-                </button>
+                >Copy number</button>
               </div>
             </div>
 
+            {/* ✅ Direct Pay Button */}
             <button
-              onClick={() =>
-                window.location.href = `https://esewa.com.np/epay/main?amt=${total}&p1=wallet&p2=9867391430`
-              }
+              onClick={handleESewaPay}
               className="w-full mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
             >
               Pay Direct via eSewa
@@ -163,9 +166,7 @@ const Checkout = () => {
               <div className="space-y-2 text-sm">
                 {cart.map((item) => (
                   <div key={item.id} className="flex justify-between">
-                    <span className="text-gray-700">
-                      {item.name} × {item.quantity}
-                    </span>
+                    <span className="text-gray-700">{item.name} × {item.quantity}</span>
                     <span className="font-medium">Rs. {item.price * item.quantity}</span>
                   </div>
                 ))}
@@ -189,26 +190,20 @@ const Checkout = () => {
               <label className="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition-all">
                 {preview ? (
                   <div className="space-y-3">
-                    <img
-                      src={preview}
-                      alt="Payment proof"
-                      className="mx-auto max-h-48 rounded-lg shadow-md"
-                    />
+                    <img src={preview} alt="Payment proof" className="mx-auto max-h-48 rounded-lg shadow-md" />
                     <p className="text-sm text-green-600 flex items-center justify-center gap-1">
                       <FiCheckCircle /> Screenshot uploaded
                     </p>
-                  </div>
-                ) : (
+                  </div>) : (
                   <div className="text-gray-500">
                     <FiUpload className="mx-auto text-4xl mb-2 text-gray-400" />
                     <p>Click to upload</p>
-                  </div>
-                )}
+                  </div>)}
                 <input type="file" accept="image/*" className="hidden" onChange={handleImage} />
               </label>
             </div>
 
-            {/* Confirm Button */}
+            {/* Confirm */}
             <button
               onClick={handleSubmit}
               disabled={loading}
