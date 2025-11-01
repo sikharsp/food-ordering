@@ -16,7 +16,6 @@ const Checkout = () => {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + deliveryCharge;
 
-  // Handle image upload
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -25,7 +24,6 @@ const Checkout = () => {
     }
   };
 
-  // Submit order with uploaded screenshot
   const handleSubmit = async () => {
     if (!uploadedImage) return alert("Please upload payment screenshot!");
     if (!address.trim()) return alert("Please enter delivery address!");
@@ -37,7 +35,7 @@ const Checkout = () => {
     const formData = new FormData();
     formData.append("receipt", uploadedImage);
     formData.append("user_id", user.id);
-    formData.append("transaction_code", "TEST" + Date.now()); // For testing
+    formData.append("transaction_code", "QR" + Date.now());
     formData.append("location", location);
     formData.append("address", address);
     formData.append("cart", JSON.stringify(cart));
@@ -66,17 +64,17 @@ const Checkout = () => {
     }
   };
 
-  // Redirect to eSewa test link
-  const handleTestPay = () => {
+  const handleESewaPay = () => {
+    const pid = "TEST" + Date.now(); // unique transaction ID
     const params = new URLSearchParams({
-      amt: total,
-      psc: 0,
-      pdc: 0,
-      tAmt: total,
-      pid: "TEST" + Date.now(),
-      scd: "EPAYTEST",
-      su: "http://localhost/success", // Redirect URL on success (dummy)
-      fu: "http://localhost/fail",    // Redirect URL on failure (dummy)
+      amt: total,      // product amount
+      pdc: 0,          // delivery charge (for testing)
+      psc: 0,          // service charge (for testing)
+      tAmt: total,     // total amount
+      pid: pid,
+      scd: "EPAYTEST",           // sandbox merchant code
+      su: "http://localhost/success",  // success URL (dummy for test)
+      fu: "http://localhost/fail",     // failure URL (dummy for test)
     });
     window.open(`https://esewa.com.np/epay/main?${params.toString()}`, "_blank");
   };
@@ -88,15 +86,16 @@ const Checkout = () => {
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium mb-6 transition-colors"
         >
-          <FiArrowLeft className="text-xl" /> Back to Cart
+          <FiArrowLeft className="text-xl" />
+          Back to Cart
         </button>
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Left Section */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-800">Pay via eSewa Test</h2>
-              <p className="text-gray-600 mt-1">Scan QR or Pay Direct (Test Account)</p>
+              <h2 className="text-2xl font-bold text-gray-800">Pay via eSewa</h2>
+              <p className="text-gray-600 mt-1">Scan QR or Pay Direct</p>
             </div>
 
             <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl">
@@ -106,21 +105,27 @@ const Checkout = () => {
             <div className="mt-8 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-md">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">Pay to (Test)</p>
-                  <p className="text-xl font-bold">9806800001</p>
-                  <p className="text-lg">EPAYTEST</p>
+                  <p className="text-sm opacity-90">Pay to</p>
+                  <p className="text-xl font-bold">Sikhar Panthi</p>
+                  <p className="text-lg">9867391430</p>
                 </div>
                 <button
-                  onClick={() => { navigator.clipboard.writeText("9806800001"); alert("Copied eSewa Test ID"); }}
+                  onClick={() => {
+                    navigator.clipboard.writeText("9867391430");
+                    alert("Copied eSewa Number");
+                  }}
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                >Copy ID</button>
+                >Copy number</button>
               </div>
             </div>
 
+            {/* ✅ New Direct Pay Button */}
             <button
-              onClick={handleTestPay}
+              onClick={handleESewaPay}
               className="w-full mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
-            >Pay Direct via eSewa Test</button>
+            >
+              Pay Direct via eSewa (Test)
+            </button>
 
             <p className="text-center text-sm text-gray-500 mt-3">
               Pay Rs {total} → Then upload screenshot below
@@ -131,7 +136,6 @@ const Checkout = () => {
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Complete Your Order</h1>
 
-            {/* Delivery Details */}
             <div className="space-y-4 mb-6">
               <div>
                 <label className="flex items-center gap-2 text-gray-700 font-medium mb-2">
@@ -206,7 +210,7 @@ const Checkout = () => {
               </label>
             </div>
 
-            {/* Submit Button */}
+            {/* Confirm */}
             <button
               onClick={handleSubmit}
               disabled={loading}
@@ -228,15 +232,19 @@ const Checkout = () => {
             <div className="text-center text-sm text-gray-600 mt-4 space-y-1">
               <p>✅ Secure Payment | 🕒 Manual verification 2–5 mins</p>
               <p className="flex items-center justify-center gap-2">
-                📞 Support: <span className="font-semibold">9806800001</span>
+                📞 Support: <span className="font-semibold">9867391430</span>
                 <button
-                  onClick={() => { navigator.clipboard.writeText("9806800001"); alert("Support number copied!"); }}
+                  onClick={() => {
+                    navigator.clipboard.writeText("9867391430");
+                    alert("Support number copied!");
+                  }}
                   className="text-xs bg-gray-200 px-2 py-1 rounded-md hover:bg-gray-300"
                 >
                   Copy
                 </button>
               </p>
             </div>
+
           </div>
         </div>
       </div>
