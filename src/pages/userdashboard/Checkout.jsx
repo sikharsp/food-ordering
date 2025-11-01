@@ -16,7 +16,6 @@ const Checkout = () => {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + deliveryCharge;
 
-  // Handle file upload
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -25,10 +24,10 @@ const Checkout = () => {
     }
   };
 
-  // Submit order after uploading screenshot
   const handleSubmit = async () => {
     if (!uploadedImage) return alert("Please upload payment screenshot!");
     if (!address.trim()) return alert("Please enter delivery address!");
+
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return navigate("/login");
 
@@ -49,6 +48,7 @@ const Checkout = () => {
         body: formData,
       });
       const data = await res.json();
+
       if (data.success) {
         alert("✅ Order submitted! We'll verify and deliver soon.");
         setCart([]);
@@ -64,35 +64,35 @@ const Checkout = () => {
     }
   };
 
-  // Direct eSewa payment
+  // Generate eSewa sandbox link
   const handleESewaPay = () => {
-    if (cart.length === 0) return alert("Cart is empty!");
     const amt = subtotal;
     const psc = 0;
     const pdc = deliveryCharge;
     const tAmt = amt + psc + pdc;
+    const txAmt = tAmt;
     const pid = "TXN" + Date.now();
     const scd = "EPAYTEST";
     const su = "http://localhost/success";
     const fu = "http://localhost/fail";
 
-    const url = `https://esewa.com.np/epay/main?amt=${amt}&psc=${psc}&pdc=${pdc}&tAmt=${tAmt}&pid=${pid}&scd=${scd}&su=${su}&fu=${fu}`;
+    const url = `https://esewa.com.np/epay/main?amt=${amt}&txAmt=${txAmt}&psc=${psc}&pdc=${pdc}&tAmt=${tAmt}&pid=${pid}&scd=${scd}&su=${su}&fu=${fu}`;
     window.location.href = url;
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-pink-50 py-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium mb-6 transition-colors"
         >
-          <FiArrowLeft className="text-xl" /> Back to Cart
+          <FiArrowLeft className="text-xl" />
+          Back to Cart
         </button>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left: eSewa Payment */}
+          {/* Left Section */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-800">Pay via eSewa</h2>
@@ -100,11 +100,7 @@ const Checkout = () => {
             </div>
 
             <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl">
-              <img
-                src={qrImage}
-                alt="eSewa QR Code"
-                className="w-full max-w-xs mx-auto rounded-xl shadow-lg"
-              />
+              <img src={qrImage} alt="eSewa QR Code" className="w-full max-w-xs mx-auto rounded-xl shadow-lg" />
             </div>
 
             <div className="mt-8 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-md">
@@ -120,13 +116,11 @@ const Checkout = () => {
                     alert("Copied eSewa Number");
                   }}
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                >
-                  Copy number
-                </button>
+                >Copy number</button>
               </div>
             </div>
 
-            {/* Direct eSewa Pay Button */}
+            {/* Direct Pay Button */}
             <button
               onClick={handleESewaPay}
               className="w-full mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
@@ -139,7 +133,7 @@ const Checkout = () => {
             </p>
           </div>
 
-          {/* Right: Checkout Form */}
+          {/* Right Section */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Complete Your Order</h1>
 
@@ -217,7 +211,7 @@ const Checkout = () => {
               </label>
             </div>
 
-            {/* Confirm Button */}
+            {/* Confirm */}
             <button
               onClick={handleSubmit}
               disabled={loading}
@@ -235,7 +229,7 @@ const Checkout = () => {
               )}
             </button>
 
-            {/* Footer Info */}
+            {/* Info Footer */}
             <div className="text-center text-sm text-gray-600 mt-4 space-y-1">
               <p>✅ Secure Payment | 🕒 Manual verification 2–5 mins</p>
               <p className="flex items-center justify-center gap-2">
@@ -251,6 +245,7 @@ const Checkout = () => {
                 </button>
               </p>
             </div>
+
           </div>
         </div>
       </div>
