@@ -32,11 +32,11 @@ const Checkout = () => {
     if (!user) return navigate("/login");
 
     setLoading(true);
-
     const formData = new FormData();
     formData.append("receipt", uploadedImage);
     formData.append("user_id", user.id);
-    formData.append("transaction_code", "TX" + Date.now()); // simple unique code
+    const transactionId = "TX" + Date.now();
+    formData.append("transaction_code", transactionId);
     formData.append("location", location);
     formData.append("address", address);
     formData.append("cart", JSON.stringify(cart));
@@ -65,15 +65,30 @@ const Checkout = () => {
     }
   };
 
+  // eSewa Direct Payment URL generator
+  const generateEsewaURL = () => {
+    const pid = "TX" + Date.now(); // unique transaction ID
+    const amt = total.toFixed(2);
+    const pdc = deliveryCharge.toFixed(2);
+    const psc = 0;
+    const txAmt = 0;
+    const tAmt = (parseFloat(amt) + parseFloat(pdc) + parseFloat(psc) + parseFloat(txAmt)).toFixed(2);
+    const scd = "EPAYTEST"; // merchant code
+    const su = "https://yourdomain.com/success"; // success URL
+    const fu = "https://yourdomain.com/fail";    // failure URL
+
+    return `https://esewa.com.np/epay/main?amt=${amt}&pdc=${pdc}&psc=${psc}&txAmt=${txAmt}&tAmt=${tAmt}&pid=${pid}&scd=${scd}&su=${encodeURIComponent(su)}&fu=${encodeURIComponent(fu)}`;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-pink-50 py-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
+        {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium mb-6 transition-colors"
         >
-          <FiArrowLeft className="text-xl" />
-          Back to Cart
+          <FiArrowLeft className="text-xl" /> Back to Cart
         </button>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -96,23 +111,21 @@ const Checkout = () => {
                   <p className="text-lg">9867391430</p>
                 </div>
                 <button
-                  onClick={() => {
-                    navigator.clipboard.writeText("9867391430");
-                    alert("Copied eSewa Number");
-                  }}
+                  onClick={() => { navigator.clipboard.writeText("9867391430"); alert("Copied eSewa Number"); }}
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                >
-                  Copy number
-                </button>
+                >Copy number</button>
               </div>
             </div>
 
-            <button
-              onClick={() => window.location.href = `https://esewa.com.np/epay/main?amt=${total}&p1=wallet&p2=9867391430`}
-              className="w-full mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
+            {/* ✅ Direct Pay Button */}
+            <a
+              href={generateEsewaURL()}
+              className="w-full mt-6 inline-block text-center bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Pay Direct via eSewa
-            </button>
+            </a>
 
             <p className="text-center text-sm text-gray-500 mt-3">
               Pay Rs {total} → Then upload screenshot below
@@ -123,6 +136,7 @@ const Checkout = () => {
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Complete Your Order</h1>
 
+            {/* Delivery Address */}
             <div className="space-y-4 mb-6">
               <div>
                 <label className="flex items-center gap-2 text-gray-700 font-medium mb-2">
@@ -197,7 +211,7 @@ const Checkout = () => {
               </label>
             </div>
 
-            {/* Confirm */}
+            {/* Confirm Button */}
             <button
               onClick={handleSubmit}
               disabled={loading}
