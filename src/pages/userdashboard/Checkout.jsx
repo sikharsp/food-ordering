@@ -50,39 +50,24 @@ const Checkout = () => {
       const data = await res.json();
 
       if (data.success) {
-        alert("✅ Order submitted! We'll verify and deliver soon.");
+        alert("Order Confirmed! You’ll receive it soon.");
         setCart([]);
         navigate("/dashboard/menu");
       } else {
-        alert("Payment failed. Try again.");
+        alert("Payment failed. Please try again.");
       }
     } catch (error) {
       console.error("Order error:", error);
-      alert("Network error. Check connection.");
+      alert("Network error. Please check your connection.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Generate eSewa sandbox link
-  const handleESewaPay = () => {
-    const amt = subtotal;
-    const psc = 0;
-    const pdc = deliveryCharge;
-    const tAmt = amt + psc + pdc;
-    const txAmt = tAmt;
-    const pid = "TXN" + Date.now();
-    const scd = "EPAYTEST";
-    const su = "http://localhost/success";
-    const fu = "http://localhost/fail";
-
-    const url = `https://esewa.com.np/epay/main?amt=${amt}&txAmt=${txAmt}&psc=${psc}&pdc=${pdc}&tAmt=${tAmt}&pid=${pid}&scd=${scd}&su=${su}&fu=${fu}`;
-    window.location.href = url;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-pink-50 py-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
+        {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium mb-6 transition-colors"
@@ -92,15 +77,19 @@ const Checkout = () => {
         </button>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Section */}
+          {/* Left: QR Code & Payment Info */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-800">Pay via eSewa</h2>
-              <p className="text-gray-600 mt-1">Scan QR or Pay Direct</p>
+              <p className="text-gray-600 mt-1">Scan QR to pay instantly</p>
             </div>
 
             <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl">
-              <img src={qrImage} alt="eSewa QR Code" className="w-full max-w-xs mx-auto rounded-xl shadow-lg" />
+              <img
+                src={qrImage}
+                alt="eSewa QR Code"
+                className="w-full max-w-xs mx-auto rounded-xl shadow-lg"
+              />
             </div>
 
             <div className="mt-8 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-md">
@@ -113,34 +102,30 @@ const Checkout = () => {
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText("9867391430");
-                    alert("Copied eSewa Number");
+                    alert("Copied!");
                   }}
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                >Copy number</button>
+                >
+                  Copy ID
+                </button>
               </div>
             </div>
 
-            {/* Direct Pay Button */}
-            <button
-              onClick={handleESewaPay}
-              className="w-full mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
-            >
-              Pay Direct via eSewa
-            </button>
-
-            <p className="text-center text-sm text-gray-500 mt-3">
-              Pay Rs {total} → Then upload screenshot below
+            <p className="text-center text-sm text-gray-500 mt-6">
+              Scan QR → Pay Rs {total} → Upload Screenshot
             </p>
           </div>
 
-          {/* Right Section */}
+          {/* Right: Checkout Form */}
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Complete Your Order</h1>
 
+            {/* Delivery Address */}
             <div className="space-y-4 mb-6">
               <div>
                 <label className="flex items-center gap-2 text-gray-700 font-medium mb-2">
-                  <FiMapPin className="text-orange-500" /> Delivery Location
+                  <FiMapPin className="text-orange-500" />
+                  Delivery Location
                 </label>
                 <select
                   value={location}
@@ -155,7 +140,9 @@ const Checkout = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Full Delivery Address</label>
+                <label className="block text-gray-700 font-medium mb-2">
+                  Full Delivery Address
+                </label>
                 <input
                   type="text"
                   placeholder="e.g., Milan Chowk, Near Galaxy School"
@@ -172,15 +159,23 @@ const Checkout = () => {
               <div className="space-y-2 text-sm">
                 {cart.map((item) => (
                   <div key={item.id} className="flex justify-between">
-                    <span className="text-gray-700">{item.name} × {item.quantity}</span>
+                    <span className="text-gray-700">
+                      {item.name} × {item.quantity}
+                    </span>
                     <span className="font-medium">Rs. {item.price * item.quantity}</span>
                   </div>
                 ))}
               </div>
               <hr className="my-3 border-dashed border-orange-200" />
               <div className="space-y-1 text-sm">
-                <div className="flex justify-between"><span>Subtotal</span><span>Rs. {subtotal}</span></div>
-                <div className="flex justify-between"><span>Delivery</span><span>Rs. {deliveryCharge}</span></div>
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>Rs. {subtotal}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Delivery</span>
+                  <span>Rs. {deliveryCharge}</span>
+                </div>
               </div>
               <div className="flex justify-between items-center mt-4 pt-3 border-t border-orange-200">
                 <span className="text-lg font-bold text-gray-800">Total</span>
@@ -191,12 +186,17 @@ const Checkout = () => {
             {/* Upload Screenshot */}
             <div className="mb-6">
               <label className="block text-gray-700 font-medium mb-3 flex items-center gap-2">
-                <FiUpload className="text-orange-500" /> Upload Payment Screenshot
+                <FiUpload className="text-orange-500" />
+                Upload Payment Screenshot
               </label>
               <label className="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition-all">
                 {preview ? (
                   <div className="space-y-3">
-                    <img src={preview} alt="Payment proof" className="mx-auto max-h-48 rounded-lg shadow-md" />
+                    <img
+                      src={preview}
+                      alt="Payment proof"
+                      className="mx-auto max-h-48 rounded-lg shadow-md"
+                    />
                     <p className="text-sm text-green-600 flex items-center justify-center gap-1">
                       <FiCheckCircle /> Screenshot uploaded
                     </p>
@@ -207,15 +207,20 @@ const Checkout = () => {
                     <p>Click to upload</p>
                   </div>
                 )}
-                <input type="file" accept="image/*" className="hidden" onChange={handleImage} />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImage}
+                />
               </label>
             </div>
 
-            {/* Confirm */}
+            {/* Confirm Button */}
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold py-4 rounded-xl hover:from-orange-600 hover:to-pink-700 transition-all transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold py-4 rounded-xl hover:from-orange-600 hover:to-pink-700 transition-all transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
@@ -224,28 +229,15 @@ const Checkout = () => {
                 </span>
               ) : (
                 <>
-                  <FiCheckCircle className="text-xl" /> Submit Payment & Receipt
+                  <FiCheckCircle className="text-xl" />
+                  Confirm Payment
                 </>
               )}
             </button>
 
-            {/* Info Footer */}
-            <div className="text-center text-sm text-gray-600 mt-4 space-y-1">
-              <p>✅ Secure Payment | 🕒 Manual verification 2–5 mins</p>
-              <p className="flex items-center justify-center gap-2">
-                📞 Support: <span className="font-semibold">9867391430</span>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText("9867391430");
-                    alert("Support number copied!");
-                  }}
-                  className="text-xs bg-gray-200 px-2 py-1 rounded-md hover:bg-gray-300"
-                >
-                  Copy
-                </button>
-              </p>
-            </div>
-
+            <p className="text-center text-xs text-gray-500 mt-4">
+              Secure Payment • Verified in 2–5 mins • Support: 9867391430
+            </p>
           </div>
         </div>
       </div>
