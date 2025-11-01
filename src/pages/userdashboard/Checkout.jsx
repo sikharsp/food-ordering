@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { FiArrowLeft, FiMapPin, FiUpload, FiCheckCircle } from "react-icons/fi";
 import qrImage from "./assets/IMG_7696.jpg";
+import { v4 as uuid } from "uuid";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -64,15 +65,15 @@ const Checkout = () => {
     }
   };
 
-  const handleESewaPay = () => {
-    const txId = "ORD" + Date.now(); // unique transaction id
-    const successURL = encodeURIComponent("http://localhost:3000/payment-success");
-    const failureURL = encodeURIComponent("http://localhost:3000/payment-failed");
+  // Unique transaction ID for eSewa
+  const txId = uuid();
 
-    const esewaURL = `https://esewa.com.np/epay/main?amt=${total}&txAmt=0&pdc=FoodHub&psc=0&tAmt=${total}&scd=EPAYTEST&pid=${txId}&su=${successURL}&fu=${failureURL}`;
+  // Success & failure URLs for eSewa redirect
+  const successURL = "https://your-public-success-url.com/success"; // Replace with your live/test URL
+  const failureURL = "https://your-public-failure-url.com/failure"; // Replace with your live/test URL
 
-    window.location.href = esewaURL;
-  };
+  // eSewa sandbox URL
+  const esewaURL = `https://esewa.com.np/epay/epay_test?amt=${total}&tAmt=${total}&txAmt=0&psc=0&pdc=0&scd=EPAYTEST&pid=${txId}&su=${successURL}&fu=${failureURL}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-pink-50 py-8 px-4 sm:px-6">
@@ -110,17 +111,21 @@ const Checkout = () => {
                     alert("Copied eSewa Number");
                   }}
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                >Copy number</button>
+                >
+                  Copy number
+                </button>
               </div>
             </div>
 
-            {/* ✅ Direct Pay Button */}
-            <button
-              onClick={handleESewaPay}
-              className="w-full mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
+            {/* Direct Pay Button */}
+            <a
+              href={esewaURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mt-6 inline-block text-center bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
             >
               Pay Direct via eSewa
-            </button>
+            </a>
 
             <p className="text-center text-sm text-gray-500 mt-3">
               Pay Rs {total} → Then upload screenshot below
@@ -194,11 +199,13 @@ const Checkout = () => {
                     <p className="text-sm text-green-600 flex items-center justify-center gap-1">
                       <FiCheckCircle /> Screenshot uploaded
                     </p>
-                  </div>) : (
+                  </div>
+                ) : (
                   <div className="text-gray-500">
                     <FiUpload className="mx-auto text-4xl mb-2 text-gray-400" />
                     <p>Click to upload</p>
-                  </div>)}
+                  </div>
+                )}
                 <input type="file" accept="image/*" className="hidden" onChange={handleImage} />
               </label>
             </div>
