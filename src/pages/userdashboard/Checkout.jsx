@@ -12,6 +12,9 @@ const Checkout = () => {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Your real eSewa number
+  const esewaNumber = "9867391430";
+
   const deliveryCharge = ["Butwal", "Tilottama"].includes(location) ? 100 : 150;
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + deliveryCharge;
@@ -64,8 +67,8 @@ const Checkout = () => {
     }
   };
 
-  // Build eSewa link
-  const esewaLink = `https://esewa.com.np/epay/main?amt=${total}&p1=wallet&p2=9867391430&pid=${Date.now()}`;
+  // Generate eSewa payment URL dynamically
+  const esewaPayUrl = `https://esewa.com.np/epay/main?amt=${total}&p1=wallet&p2=${esewaNumber}&pid=${Date.now()}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-pink-50 py-8 px-4 sm:px-6">
@@ -74,7 +77,8 @@ const Checkout = () => {
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium mb-6 transition-colors"
         >
-          <FiArrowLeft className="text-xl" /> Back to Cart
+          <FiArrowLeft className="text-xl" />
+          Back to Cart
         </button>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -94,26 +98,24 @@ const Checkout = () => {
                 <div>
                   <p className="text-sm opacity-90">Pay to</p>
                   <p className="text-xl font-bold">Sikhar Panthi</p>
-                  <p className="text-lg">9867391430</p>
+                  <p className="text-lg">{esewaNumber}</p>
                 </div>
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText("9867391430");
+                    navigator.clipboard.writeText(esewaNumber);
                     alert("Copied eSewa Number");
                   }}
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                >
-                  Copy number
-                </button>
+                >Copy number</button>
               </div>
             </div>
 
-            {/* Direct eSewa Pay Button */}
+            {/* Direct Pay Button */}
             <a
-              href={esewaLink}
+              href={esewaPayUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full block mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 text-center transition-all"
+              className="w-full mt-6 inline-block text-center bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
             >
               Pay Direct via eSewa
             </a>
@@ -162,8 +164,8 @@ const Checkout = () => {
               <div className="space-y-2 text-sm">
                 {cart.map((item) => (
                   <div key={item.id} className="flex justify-between">
-                    <span>{item.name} × {item.quantity}</span>
-                    <span>Rs. {item.price * item.quantity}</span>
+                    <span className="text-gray-700">{item.name} × {item.quantity}</span>
+                    <span className="font-medium">Rs. {item.price * item.quantity}</span>
                   </div>
                 ))}
               </div>
@@ -173,7 +175,7 @@ const Checkout = () => {
                 <div className="flex justify-between"><span>Delivery</span><span>Rs. {deliveryCharge}</span></div>
               </div>
               <div className="flex justify-between items-center mt-4 pt-3 border-t border-orange-200">
-                <span className="text-lg font-bold">Total</span>
+                <span className="text-lg font-bold text-gray-800">Total</span>
                 <span className="text-2xl font-bold text-orange-600">Rs. {total}</span>
               </div>
             </div>
@@ -190,13 +192,11 @@ const Checkout = () => {
                     <p className="text-sm text-green-600 flex items-center justify-center gap-1">
                       <FiCheckCircle /> Screenshot uploaded
                     </p>
-                  </div>
-                ) : (
+                  </div>) : (
                   <div className="text-gray-500">
                     <FiUpload className="mx-auto text-4xl mb-2 text-gray-400" />
                     <p>Click to upload</p>
-                  </div>
-                )}
+                  </div>)}
                 <input type="file" accept="image/*" className="hidden" onChange={handleImage} />
               </label>
             </div>
@@ -223,10 +223,10 @@ const Checkout = () => {
             <div className="text-center text-sm text-gray-600 mt-4 space-y-1">
               <p>✅ Secure Payment | 🕒 Manual verification 2–5 mins</p>
               <p className="flex items-center justify-center gap-2">
-                📞 Support: <span className="font-semibold">9867391430</span>
+                📞 Support: <span className="font-semibold">{esewaNumber}</span>
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText("9867391430");
+                    navigator.clipboard.writeText(esewaNumber);
                     alert("Support number copied!");
                   }}
                   className="text-xs bg-gray-200 px-2 py-1 rounded-md hover:bg-gray-300"
@@ -235,7 +235,6 @@ const Checkout = () => {
                 </button>
               </p>
             </div>
-
           </div>
         </div>
       </div>
