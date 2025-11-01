@@ -1,4 +1,3 @@
-// ✅ Updated Checkout.jsx with eSewa direct payment button
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { FiArrowLeft, FiMapPin, FiUpload, FiCheckCircle } from "react-icons/fi";
@@ -85,7 +84,11 @@ const Checkout = () => {
             </div>
 
             <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl">
-              <img src={qrImage} alt="eSewa QR Code" className="w-full max-w-xs mx-auto rounded-xl shadow-lg" />
+              <img
+                src={qrImage}
+                alt="eSewa QR Code"
+                className="w-full max-w-xs mx-auto rounded-xl shadow-lg"
+              />
             </div>
 
             <div className="mt-8 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-md">
@@ -101,15 +104,20 @@ const Checkout = () => {
                     alert("Copied eSewa Number");
                   }}
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                >Copy number</button>
+                >
+                  Copy number
+                </button>
               </div>
             </div>
 
-            {/* ✅ New Direct Pay Button */}
             <button
-              onClick={() => window.location.href = `https://esewa.com.np/epay/main?amt=${total}&p1=wallet&p2=9867391430`}
+              onClick={() =>
+                window.location.href = `https://esewa.com.np/epay/main?amt=${total}&p1=wallet&p2=9867391430`
+              }
               className="w-full mt-6 bg-emerald-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-emerald-700 transition-all"
-            >Pay Direct via eSewa</button>
+            >
+              Pay Direct via eSewa
+            </button>
 
             <p className="text-center text-sm text-gray-500 mt-3">
               Pay Rs {total} → Then upload screenshot below
@@ -155,7 +163,9 @@ const Checkout = () => {
               <div className="space-y-2 text-sm">
                 {cart.map((item) => (
                   <div key={item.id} className="flex justify-between">
-                    <span className="text-gray-700">{item.name} × {item.quantity}</span>
+                    <span className="text-gray-700">
+                      {item.name} × {item.quantity}
+                    </span>
                     <span className="font-medium">Rs. {item.price * item.quantity}</span>
                   </div>
                 ))}
@@ -179,51 +189,64 @@ const Checkout = () => {
               <label className="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition-all">
                 {preview ? (
                   <div className="space-y-3">
-                    <img src={preview} alt="Payment proof" className="mx-auto max-h-48 rounded-lg shadow-md" />
+                    <img
+                      src={preview}
+                      alt="Payment proof"
+                      className="mx-auto max-h-48 rounded-lg shadow-md"
+                    />
                     <p className="text-sm text-green-600 flex items-center justify-center gap-1">
                       <FiCheckCircle /> Screenshot uploaded
                     </p>
-                  </div>) : (
+                  </div>
+                ) : (
                   <div className="text-gray-500">
                     <FiUpload className="mx-auto text-4xl mb-2 text-gray-400" />
                     <p>Click to upload</p>
-                  </div>)}
+                  </div>
+                )}
                 <input type="file" accept="image/*" className="hidden" onChange={handleImage} />
               </label>
             </div>
 
-           {/* Confirm */}
-<button
-  onClick={handleSubmit}
-  disabled={loading}
-  className="w-full bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold py-4 rounded-xl hover:from-orange-600 hover:to-pink-700 transition-all transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
->
-  {loading ? (
-    <span className="flex items-center gap-2">
-      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-      Processing...
-    </span>
-  ) : (
-    <>
-      <FiCheckCircle className="text-xl" /> Submit Payment & Receipt
-    </>
-  )}
-</button>
+            {/* Confirm Button */}
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold py-4 rounded-xl hover:from-orange-600 hover:to-pink-700 transition-all transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Processing...
+                </span>
+              ) : (
+                <>
+                  <FiCheckCircle className="text-xl" /> Submit Payment & Receipt
+                </>
+              )}
+            </button>
 
-{/* Info Footer */}
-<div className="text-center text-sm text-gray-600 mt-4 space-y-1">
-  <p>✅ Secure Payment | 🕒 Manual verification 2–5 mins</p>
-  <p className="flex items-center justify-center gap-2">
-    📞 Support: <span className="font-semibold">9867391430</span>
-    <button
-      onClick={() => {
-        navigator.clipboard.writeText("9867391430");
-        alert("Support number copied!");
-      }}
-      className="text-xs bg-gray-200 px-2 py-1 rounded-md hover:bg-gray-300"
-    >
-      Copy
-    </button>
-  </p>
-</div>
+            {/* Info Footer */}
+            <div className="text-center text-sm text-gray-600 mt-4 space-y-1">
+              <p>✅ Secure Payment | 🕒 Manual verification 2–5 mins</p>
+              <p className="flex items-center justify-center gap-2">
+                📞 Support: <span className="font-semibold">9867391430</span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText("9867391430");
+                    alert("Support number copied!");
+                  }}
+                  className="text-xs bg-gray-200 px-2 py-1 rounded-md hover:bg-gray-300"
+                >
+                  Copy
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default Checkout;
