@@ -226,4 +226,4 @@ const Checkout = () => {
     </button>
   </p>
 </div>
-
+export default Checkout;
