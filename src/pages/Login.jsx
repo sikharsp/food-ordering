@@ -29,7 +29,10 @@ const Login = () => {
       setLoginError('');
       setLoading(true);
 
-      const response = await axios.post('http://localhost/api/login.php', formData);
+    const response = await axios.post(
+  'https://food-order-system.great-site.net/api/login.php',
+  formData
+);
 
  if (response.data.success) {
   const pref = response.data.preference || 'both';
