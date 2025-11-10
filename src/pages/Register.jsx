@@ -52,7 +52,11 @@ const Register = () => {
       fd.append('password', formData.password);
       fd.append('foodPreference', formData.foodPreference);
 
-      const response = await axios.post('http://localhost/api/register.php', fd);
+     const response = await axios.post(
+  'https://food-order-system.great-site.net/api/register.php',
+  fd
+);
+
 
       if (response.data.success) {
         navigate('/login'); // ✅ Navigate after success
