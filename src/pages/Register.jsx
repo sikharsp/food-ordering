@@ -15,7 +15,7 @@ const Register = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // ✅ Password toggle
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,10 +29,15 @@ const Register = () => {
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
-    if (!nameRegex.test(formData.name)) newErrors.name = 'Name must be at least 3 letters and contain no numbers.';
-    if (!phoneRegex.test(formData.phone)) newErrors.phone = 'Phone number must be 10 digits, start with 97 or 98, and not all 0 or 1.';
+    if (!nameRegex.test(formData.name))
+      newErrors.name = 'Name must be at least 3 letters and contain no numbers.';
+    if (!phoneRegex.test(formData.phone))
+      newErrors.phone =
+        'Phone number must be 10 digits, start with 97 or 98, and not all 0 or 1.';
     if (!emailRegex.test(formData.email)) newErrors.email = 'Enter a valid email address.';
-    if (!passwordRegex.test(formData.password)) newErrors.password = 'Password must include uppercase, lowercase, number, and special character.';
+    if (!passwordRegex.test(formData.password))
+      newErrors.password =
+        'Password must include uppercase, lowercase, number, and special character.';
     if (!formData.foodPreference) newErrors.foodPreference = 'Please select a food preference.';
 
     setErrors(newErrors);
@@ -44,27 +49,33 @@ const Register = () => {
     if (!validateForm()) return;
 
     setLoading(true);
+    setErrors({});
+
     try {
-      const fd = new FormData();
-      fd.append('name', formData.name);
-      fd.append('phone', formData.phone);
-      fd.append('email', formData.email);
-      fd.append('password', formData.password);
-      fd.append('foodPreference', formData.foodPreference);
+      // ✅ Send JSON payload instead of FormData
+      const payload = {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        password: formData.password,
+        foodPreference: formData.foodPreference,
+      };
 
-     const response = await axios.post(
-  'https://food-order-system.great-site.net/api/register.php',
-  fd
-);
-
+      const response = await axios.post(
+        'https://food-order-system.great-site.net/api/register.php',
+        payload,
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
 
       if (response.data.success) {
-        navigate('/login'); // ✅ Navigate after success
+        navigate('/login'); // Navigate to login after successful registration
       } else {
         setErrors({ general: response.data.message });
       }
     } catch (err) {
-      setErrors({ general: 'Network error or invalid data. Try again.' });
+      setErrors({ general: 'Network error or server issue. Try again.' });
       console.error(err);
     } finally {
       setLoading(false);
@@ -76,6 +87,7 @@ const Register = () => {
       <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-center mb-4">Register</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Name</label>
             <div className="mt-1 relative">
@@ -86,10 +98,13 @@ const Register = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="John Doe"
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
             </div>
             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
           </div>
+
+          {/* Phone */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Phone</label>
             <div className="mt-1 relative">
@@ -100,10 +115,13 @@ const Register = () => {
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="9847543024"
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
             </div>
             {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
           </div>
+
+          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <div className="mt-1 relative">
@@ -114,10 +132,13 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
             </div>
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
+
+          {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <div className="mt-1 relative">
@@ -128,15 +149,19 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="********"
-                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
               <span
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer" >
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+              >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </span>
             </div>
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
+
+          {/* Food Preference */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Food Preference</label>
             <div className="mt-1 space-x-4">
@@ -148,22 +173,31 @@ const Register = () => {
                     value={f}
                     checked={formData.foodPreference === f}
                     onChange={handleChange}
-                    className="mr-1" />
+                    className="mr-1"
+                  />
                   {f.charAt(0).toUpperCase() + f.slice(1)}
-                </label>  ))}
+                </label>
+              ))}
             </div>
-            {errors.foodPreference && <p className="text-red-500 text-sm mt-1">{errors.foodPreference}</p>}
+            {errors.foodPreference && (
+              <p className="text-red-500 text-sm mt-1">{errors.foodPreference}</p>
+            )}
           </div>
+
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
             className={`w-full py-2 rounded-md text-white font-medium ${
               loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-600'
-            }`}  >
+            }`}
+          >
             {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
+
         {errors.general && <p className="mt-2 text-sm text-red-500 text-center">{errors.general}</p>}
+
         <p className="mt-2 text-center text-sm text-gray-600">
           Already have an account? <Link to="/login" className="text-orange-500">Login</Link>
         </p>
