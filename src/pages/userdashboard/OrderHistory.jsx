@@ -9,7 +9,6 @@ const OrderHistory = () => {
   const [loading, setLoading] = useState(true);
   const { setCart } = useOutletContext();
 
-  // Fetch user orders
   const fetchOrders = async () => {
     try {
       const userId = localStorage.getItem("user_id");
@@ -26,7 +25,6 @@ const OrderHistory = () => {
     fetchOrders();
   }, []);
 
-  // Status color
   const getStatusStyle = (status) => {
     switch (status) {
       case "Delivered":
@@ -38,7 +36,6 @@ const OrderHistory = () => {
     }
   };
 
-  // Check if order can be cancelled (5 minutes)
   const canCancel = (createdAt) => {
     if (!createdAt) return false;
     const orderTime = new Date(createdAt).getTime();
@@ -47,10 +44,9 @@ const OrderHistory = () => {
     return diffMinutes <= 5;
   };
 
-  // Handle reorder
   const handleReorder = (items) => {
     const reorderedItems = items
-      .filter(item => item.menu_item_id) // only valid items
+      .filter((item) => item.menu_item_id)
       .map((item, index) => ({
         id: `${item.menu_item_id}-${index}`,
         menu_item_id: item.menu_item_id,
@@ -109,10 +105,12 @@ const OrderHistory = () => {
                 </span>
               </div>
 
-              {/* Items list */}
               <div className="border-t border-gray-200 pt-3 space-y-2 max-h-36 overflow-y-auto">
                 {order.items?.map((item, i) => (
-                  <div key={`${item.menu_item_id}-${i}`} className="flex justify-between items-center text-sm">
+                  <div
+                    key={`${item.menu_item_id}-${i}`}
+                    className="flex justify-between items-center text-sm"
+                  >
                     <div className="flex items-center space-x-2">
                       {item.image && (
                         <img
@@ -121,7 +119,9 @@ const OrderHistory = () => {
                           className="w-10 h-10 object-cover rounded"
                         />
                       )}
-                      <span>{item.name} × {item.quantity}</span>
+                      <span>
+                        {item.name} × {item.quantity}
+                      </span>
                     </div>
                     <span>Rs {item.price}</span>
                   </div>
@@ -130,7 +130,9 @@ const OrderHistory = () => {
 
               <div className="border-t border-gray-200 pt-3 mt-3 flex justify-between items-center">
                 <span className="font-semibold">Total:</span>
-                <span className="font-bold">Rs {Number(order.total).toFixed(2)}</span>
+                <span className="font-bold">
+                  Rs {Number(order.total).toFixed(2)}
+                </span>
               </div>
 
               <div className="mt-3 flex gap-2">

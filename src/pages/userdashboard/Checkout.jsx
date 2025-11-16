@@ -7,15 +7,18 @@ const Checkout = () => {
   const { cart, setCart } = useOutletContext();
 
   const savedUser = JSON.parse(localStorage.getItem("user")) || {};
-  const [savedAddress ]  = useState(savedUser.address || "");
-  const [savedLocation ] = useState(savedUser.location || "Butwal");
+  const [savedAddress] = useState(savedUser.address || "");
+  const [savedLocation] = useState(savedUser.location || "Butwal");
 
   const [location, setLocation] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
 
   const deliveryCharge = ["Butwal", "Tilottama"].includes(location) ? 100 : 150;
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
   const total = subtotal + deliveryCharge;
 
   const handleUseSavedAddress = () => {
@@ -86,10 +89,15 @@ const Checkout = () => {
         </button>
 
         <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 w-full">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Complete Your Order</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+            Complete Your Order
+          </h1>
 
           <div className="text-sm text-gray-600 mb-4">
-            Payment Method: <span className="font-semibold text-orange-600">Cash on Delivery</span>
+            Payment Method:{" "}
+            <span className="font-semibold text-orange-600">
+              Cash on Delivery
+            </span>
           </div>
 
           {savedAddress && (
@@ -120,7 +128,9 @@ const Checkout = () => {
             </div>
 
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Full Delivery Address</label>
+              <label className="block text-gray-700 font-medium mb-2">
+                Full Delivery Address
+              </label>
               <input
                 type="text"
                 placeholder="House / Street / Landmark"
@@ -131,14 +141,19 @@ const Checkout = () => {
             </div>
           </div>
 
-          {/* Order Summary */}
           <div className="bg-gradient-to-r from-orange-50 to-pink-50 p-5 rounded-2xl mb-6 border border-orange-100">
-            <h3 className="font-bold text-lg text-orange-700 mb-3">Order Summary</h3>
+            <h3 className="font-bold text-lg text-orange-700 mb-3">
+              Order Summary
+            </h3>
             <div className="space-y-2 text-sm">
               {cart.map((item) => (
                 <div key={item.id} className="flex justify-between">
-                  <span className="text-gray-700">{item.name} × {item.quantity}</span>
-                  <span className="font-medium">Rs. {item.price * item.quantity}</span>
+                  <span className="text-gray-700">
+                    {item.name} × {item.quantity}
+                  </span>
+                  <span className="font-medium">
+                    Rs. {item.price * item.quantity}
+                  </span>
                 </div>
               ))}
             </div>
@@ -146,13 +161,21 @@ const Checkout = () => {
             <hr className="my-3 border-dashed border-orange-200" />
 
             <div className="space-y-1 text-sm">
-              <div className="flex justify-between"><span>Subtotal</span><span>Rs. {subtotal}</span></div>
-              <div className="flex justify-between"><span>Delivery</span><span>Rs. {deliveryCharge}</span></div>
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>Rs. {subtotal}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Delivery</span>
+                <span>Rs. {deliveryCharge}</span>
+              </div>
             </div>
 
             <div className="flex justify-between items-center mt-4 pt-3 border-t border-orange-200">
               <span className="text-lg font-bold text-gray-800">Total</span>
-              <span className="text-2xl font-bold text-orange-600">Rs. {total}</span>
+              <span className="text-2xl font-bold text-orange-600">
+                Rs. {total}
+              </span>
             </div>
           </div>
 

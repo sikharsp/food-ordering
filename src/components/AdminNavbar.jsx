@@ -1,13 +1,22 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FiHome, FiMenu, FiShoppingCart, FiUsers, FiBarChart2, FiLogOut, FiMenu as FiMenuIcon, FiX } from 'react-icons/fi';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  FiHome,
+  FiMenu,
+  FiShoppingCart,
+  FiUsers,
+  FiBarChart2,
+  FiLogOut,
+  FiMenu as FiMenuIcon,
+  FiX,
+} from "react-icons/fi";
 
 const AdminNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    window.location.href = '/admin-login';
+    localStorage.removeItem("adminToken");
+    window.location.href = "/admin-login";
   };
 
   const toggleMenu = () => {
@@ -17,21 +26,36 @@ const AdminNavbar = () => {
   return (
     <nav className="bg-gray-900 text-white fixed w-full top-0 z-20 shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
-        <Link to="/admin-dashboard" className="text-lg font-bold hover:text-orange-300 flex items-center">
+        <Link
+          to="/admin-dashboard"
+          className="text-lg font-bold hover:text-orange-300 flex items-center"
+        >
           <FiHome className="mr-2" /> Admin
         </Link>
-          {/* desktop */}
+        {/* desktop */}
         <div className="hidden md:flex space-x-6 items-center">
-          <Link to="/admin-dashboard/menu" className="flex items-center hover:text-orange-300">
+          <Link
+            to="/admin-dashboard/menu"
+            className="flex items-center hover:text-orange-300"
+          >
             <FiMenu className="mr-2" /> Menu
           </Link>
-          <Link to="/admin-dashboard/orders" className="flex items-center hover:text-orange-300">
+          <Link
+            to="/admin-dashboard/orders"
+            className="flex items-center hover:text-orange-300"
+          >
             <FiShoppingCart className="mr-2" /> Orders
           </Link>
-          <Link to="/admin-dashboard/reports" className="flex items-center hover:text-orange-300">
+          <Link
+            to="/admin-dashboard/reports"
+            className="flex items-center hover:text-orange-300"
+          >
             <FiBarChart2 className="mr-2" /> Reports
           </Link>
-          <Link to="/admin-dashboard/message" className="flex items-center hover:text-orange-300">
+          <Link
+            to="/admin-dashboard/message"
+            className="flex items-center hover:text-orange-300"
+          >
             <FiBarChart2 className="mr-2" /> Message
           </Link>
           <button
@@ -48,7 +72,6 @@ const AdminNavbar = () => {
           </button>
         </div>
       </div>
-      {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-gray-800">
           <Link
@@ -65,7 +88,7 @@ const AdminNavbar = () => {
           >
             <FiShoppingCart className="mr-2" /> Orders
           </Link>
-          
+
           <Link
             to="/admin-dashboard/reports"
             onClick={toggleMenu}

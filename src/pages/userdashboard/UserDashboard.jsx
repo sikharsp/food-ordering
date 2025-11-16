@@ -42,7 +42,6 @@ const UserDashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Top Navbar */}
       <nav className="bg-gray-900 text-white px-6 py-4 flex justify-between items-center shadow-lg flex-shrink-0">
         <h1
           className="font-bold text-2xl tracking-wide cursor-pointer"
@@ -57,7 +56,6 @@ const UserDashboard = () => {
           {isOpen ? <FiX /> : <FiMenu />}
         </button>
 
-        {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-8 items-center">
           <li>
             <Link
@@ -111,7 +109,6 @@ const UserDashboard = () => {
         </ul>
       </nav>
 
-      {/* Mobile Dropdown Menu */}
       <div
         className={`md:hidden bg-gray-800 text-white space-y-3 px-6 overflow-hidden transition-all duration-500 ease-in-out ${
           isOpen ? "py-4 max-h-[400px] opacity-100" : "py-0 max-h-0 opacity-0"
@@ -165,12 +162,10 @@ const UserDashboard = () => {
         </button>
       </div>
 
-      {/* Main Section */}
       <main className="flex-1 p-6 bg-gray-100">
         <Outlet context={{ cart, setCart }} />
       </main>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 text-center py-4 text-sm flex-shrink-0">
         © {new Date().getFullYear()} FoodZone | All Rights Reserved
       </footer>

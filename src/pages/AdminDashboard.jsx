@@ -18,12 +18,10 @@ const AdminDashboard = () => {
     total_sales: 0,
   });
 
-  // Redirect to admin login if no token
   useEffect(() => {
     if (!token) navigate("/admin-login");
   }, [token, navigate]);
 
-  // Fetch stats from backend
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -41,7 +39,6 @@ const AdminDashboard = () => {
 
   const isDashboardRoot = location.pathname === "/admin-dashboard";
 
-  // Navigate to AdminOrders with filter
   const handleNavigate = (status) => {
     navigate("/admin-dashboard/orders", { state: { filterStatus: status } });
   };
@@ -60,7 +57,6 @@ const AdminDashboard = () => {
                 Welcome, Admin! Manage your system from here.
               </p>
 
-              {/* Stats Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div
                   onClick={() => handleNavigate("All")}
@@ -95,7 +91,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Total Sales Card */}
               <div className="mt-6 bg-white p-6 rounded-lg shadow flex items-center justify-between">
                 <h2 className="text-lg font-medium text-gray-600">Total Sales</h2>
                 <p className="text-2xl font-bold text-blue-600">Rs {stats.total_sales}</p>
