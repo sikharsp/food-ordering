@@ -29,8 +29,9 @@ const Login = () => {
       setLoginError("");
       setLoading(true);
 
+      // FINAL SELECTED VERSION (Live Hosting API)
       const response = await axios.post(
-        "http://localhost/api/login.php",
+        "https://food-order-system.great-site.net/api/login.php",
         formData
       );
 
@@ -75,11 +76,9 @@ const Login = () => {
           <FiLock className="mr-2" /> Login
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
             </label>
             <div className="mt-1 relative">
@@ -103,10 +102,7 @@ const Login = () => {
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <div className="mt-1 relative">
@@ -146,6 +142,7 @@ const Login = () => {
             </button>
           </div>
         </form>
+
         {loginError && (
           <p className="mt-2 text-sm text-red-500 text-center">{loginError}</p>
         )}
